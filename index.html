@@ -11,8 +11,7 @@
 	</head>
 	<body>
 		<div id='map'></div>
-		<script>
-			
+		<script>	
 		function getData(scope) {
 			var columnNames = getWhatToGet(dataFields[scope]);
 			var query = 'SELECT ' + columnNames + '  FROM ' + dataTableIDs[scope];
@@ -46,7 +45,22 @@
 		    return xmlHttp.responseText;
 		}
 	  	function showAlert(data){
-	  		window.alert(JSON.stringify(data));
+	  		window.alert(data);
+	  	}
+	  	var tables = {
+	  		"survey":{
+	  			id:"1d20ftB8iDjL29_rhxjNDEgy31bnFA2m99SFDOMCL"
+	  		},
+	  		"tracker":{
+	  			id:"1Nx-Rv0cmIN-N1-A7HltnC6AfSIsVV-ePJL_o8gd4"
+	  		}
+	  		,
+	  		"trackerStartSurvey":{
+	  			id:"1tbElaK8BjzKh58l94wrLXfHhET_Zz74rfnVcg0iq"
+	  		},
+	  		"trackerEndSurvey":{
+	  			id:"1mjHtMatDR-sJdR32nypzNssXkz1ltFpRd8IX_GnI"
+	  		}
 	  	}
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
