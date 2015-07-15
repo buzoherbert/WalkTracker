@@ -44,9 +44,18 @@
 		    xmlHttp.send( null );
 		    return xmlHttp.responseText;
 		}
-	  	function showAlert(data){
-	  		window.alert(data);
-	  	}
+		function parseColumnNames(response){
+			window.alert(response);
+			var obj = JSON.parse(response);
+			var items = obj.items;
+			var columns = [];
+			for (var i = 0; i < items.length; i++) {
+				columns[i] = {};
+				columns[i].name = items[i].name;
+				columns[i].type = items[i].type;
+			};
+			return columns
+		}
 	  	var tables = {
 	  		"survey":{
 	  			id:"1d20ftB8iDjL29_rhxjNDEgy31bnFA2m99SFDOMCL"
@@ -65,8 +74,8 @@
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		var query = "https://www.googleapis.com/fusiontables/v2/tables/1d20ftB8iDjL29_rhxjNDEgy31bnFA2m99SFDOMCL/columns?key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc"		
-		showAlert(httpGet(query));
-
+		var columnNames = parseColumnNames(httpGet(query));
+		window.alert(JSON.stringify(columnNames));
 		</script>
 	</body>
 </html>
