@@ -12,8 +12,37 @@
 	<body>
 		<div id='map'></div>
 		<script>
-			L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
-			var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
+			
+		function getData(scope) {
+			var columnNames = getWhatToGet(dataFields[scope]);
+			var query = 'SELECT ' + columnNames + '  FROM ' + dataTableIDs[scope];
+			getFusionTablesData(query, "parseData" + scope);
+		}
+		function getWhatToGet(columnNames){
+		  	var whatToGet = "";
+		  	for (var i = 0; i < columnNames.length; i++){
+		  		whatToGet = whatToGet + columnNames[i].KEY + ", ";
+		  	}
+		  	whatToGet = whatToGet.substring(0, whatToGet.length - 2);
+		  	return whatToGet;
+	  	}
+	  	function getFusionTablesData(query, callback){
+		  	var script = document.createElement('script');
+		  	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
+		  	url.push('sql=');
+		  	var encodedQuery = encodeURIComponent(query);
+		  	url.push(encodedQuery);
+		  	url.push('&callback=' + callback);
+		  	url.push('&key=AIzaSyAhX7a_0uyiA8DfW-4XJ6ZN_ay8GkAGrz0');
+		  	script.src = url.join('');
+		  	var body = document.getElementsByTagName('body')[0];
+		  	body.appendChild(script);
+	  	} 
+		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
+		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
+
+
+
 		</script>
 	</body>
 </html>
