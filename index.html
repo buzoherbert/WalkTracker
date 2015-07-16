@@ -78,6 +78,10 @@
 				var elem = {};
 				for (var i = 0; i < columns.length; i++) {
 					elem[columns[i]] = rows[j][i];
+					if(columns[i] == "Date"){
+						var date = Date.parse(rows[j][i]).toString();
+						elem.timeStamp = date;
+					}
 				};
 				db.insert(elem);
 			};
@@ -93,6 +97,12 @@
 				columns[i].type = items[i].type;
 			};
 			return columns;
+		}
+		function drawTrip(trip){
+			query = {};
+			query.TripID = trip;
+			var trip = tables.tracker.data(query).order("Date").get();
+			
 		}
 	  	var tables = {
 	  		"survey":{
@@ -113,6 +123,9 @@
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		populateColumnNames();
 		populateTableData();
+		var trips = tables.tracker.data().distinct("TripID");
+		console.log(JSON.stringify(trips));
+		drawTrip(trips[0]);
 		</script>
 	</body>
 </html>
