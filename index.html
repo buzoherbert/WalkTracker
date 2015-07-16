@@ -52,30 +52,35 @@
 	            }
 	        }
 		}
+		function populateTableData(){
+			for (property in tables) {
+	            if (tables.hasOwnProperty(property)) {
+	            	var columns = getWhatToGet(tables[property].columns);
+					tables[property].data = getTableData(tables[property].id, columns);
+	            }
+	        }
+		}
 		function getFTcolumnlist(tableID){
 			var query = "https://www.googleapis.com/fusiontables/v2/tables/" + tableID + "/columns?key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
 			return parseColumnNames(httpGet(query));
 		}
 		function getTableData(tableID, whatToGet){
 			var query = 'SELECT ' + whatToGet + ' FROM ' + tableID;
-			console.log(query);
 			var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
 			return parseTableData(httpGet(url));
 		}
 		function parseTableData(response){
 			var obj = JSON.parse(response);
-			var data = [];
 			var columns = obj.columns;
+			var db = TAFFY();
 			var rows = obj.rows;
 			for (var j = 0; j < rows.length; j++) {
 				var elem = {};
 				for (var i = 0; i < columns.length; i++) {
 					elem[columns[i]] = rows[j][i];
 				};
-				data[j] = elem;
+				db.insert(elem);
 			};
-			console.log(JSON.stringify(data));
-			db = TAFFY(data);
 			return db;
 		}
 		function parseColumnNames(response){
@@ -107,10 +112,7 @@
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		populateColumnNames();
-		//populateTableData();
-		var str = getWhatToGet(tables.survey.columns);
-		var data = getTableData(tables.survey.id, str);
-		console.log(data);
+		populateTableData();
 		</script>
 	</body>
 </html>
