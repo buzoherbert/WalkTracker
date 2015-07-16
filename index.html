@@ -11,16 +11,18 @@
 	</head>
 	<body>
 		<div id='map'></div>
+		<!-- Taffy DB -->
+		<script type="text/javascript" src="src/js/taffy-min.js"></script>
 		<script>	
 		function getData(scope) {
 			var columnNames = getWhatToGet(dataFields[scope]);
 			var query = 'SELECT ' + columnNames + '  FROM ' + dataTableIDs[scope];
 			getFusionTablesData(query, "parseData" + scope);
 		}
-		function getWhatToGet(columnNames){
+		function getWhatToGet(columns){
 		  	var whatToGet = "";
-		  	for (var i = 0; i < columnNames.length; i++){
-		  		whatToGet = whatToGet + columnNames[i].KEY + ", ";
+		  	for (var i = 0; i < columns.length; i++){
+		  		whatToGet = whatToGet + columns[i].name + ", ";
 		  	}
 		  	whatToGet = whatToGet.substring(0, whatToGet.length - 2);
 		  	return whatToGet;
@@ -49,11 +51,32 @@
 					tables[property].columns = getFTcolumnlist(tables[property].id);
 	            }
 	        }
-	        console.log(JSON.stringify(tables));
 		}
 		function getFTcolumnlist(tableID){
 			var query = "https://www.googleapis.com/fusiontables/v2/tables/" + tableID + "/columns?key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
 			return parseColumnNames(httpGet(query));
+		}
+		function getTableData(tableID, whatToGet){
+			var query = 'SELECT ' + whatToGet + ' FROM ' + tableID;
+			console.log(query);
+			var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
+			return parseTableData(httpGet(url));
+		}
+		function parseTableData(response){
+			var obj = JSON.parse(response);
+			var data = [];
+			var columns = obj.columns;
+			var rows = obj.rows;
+			for (var j = 0; j < rows.length; j++) {
+				var elem = {};
+				for (var i = 0; i < columns.length; i++) {
+					elem[columns[i]] = rows[j][i];
+				};
+				data[j] = elem;
+			};
+			console.log(JSON.stringify(data));
+			db = TAFFY(data);
+			return db;
 		}
 		function parseColumnNames(response){
 			var obj = JSON.parse(response);
@@ -64,26 +87,30 @@
 				columns[i].name = items[i].name;
 				columns[i].type = items[i].type;
 			};
-			return columns
+			return columns;
 		}
 	  	var tables = {
 	  		"survey":{
-	  			id:"1d20ftB8iDjL29_rhxjNDEgy31bnFA2m99SFDOMCL"
+	  			id:"1oLI1-lIhigT5Cqn7nTrlYCmzanNgKELpNbfeCBuG"
 	  		},
 	  		"tracker":{
-	  			id:"1Nx-Rv0cmIN-N1-A7HltnC6AfSIsVV-ePJL_o8gd4"
+	  			id:"1cjN7VwSnP2V-0Dbu-KfGBL3hcbMs4zXNcD3EqJU5"
 	  		}
 	  		,
 	  		"trackerStartSurvey":{
 	  			id:"1tbElaK8BjzKh58l94wrLXfHhET_Zz74rfnVcg0iq"
 	  		},
 	  		"trackerEndSurvey":{
-	  			id:"1mjHtMatDR-sJdR32nypzNssXkz1ltFpRd8IX_GnI"
+	  			id:"14WYPGQNCBpK2omFnO5zMq53UBuwhxcuCoohSQf3d"
 	  		}
 	  	}
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		populateColumnNames();
+		//populateTableData();
+		var str = getWhatToGet(tables.survey.columns);
+		var data = getTableData(tables.survey.id, str);
+		console.log(data);
 		</script>
 	</body>
 </html>
