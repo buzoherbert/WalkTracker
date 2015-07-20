@@ -54,6 +54,12 @@
 			var query = "https://www.googleapis.com/fusiontables/v2/tables/" + tableID + "/columns?key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
 			return parseColumnNames(httpGet(query));
 		}
+		function getProject(projectName){
+			var query = 'SELECT survey_json FROM ' + projectsTableID + " WHERE table_id='" + projectName + "'";
+			var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
+			var response = JSON.parse(httpGet(url));
+			var projectJSON = JSON.parse(response.rows[0][0]);
+		}
 		function getTableData(tableID, whatToGet){
 			var query = 'SELECT ' + whatToGet + ' FROM ' + tableID;
 			var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
@@ -136,8 +142,10 @@
 	  			id:"14WYPGQNCBpK2omFnO5zMq53UBuwhxcuCoohSQf3d"
 	  		}
 	  	}
+	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
+		var project = getProject("walk_proto");
 		populateColumnNames();
 		populateTableData();
 		drawTrips();
