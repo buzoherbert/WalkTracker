@@ -57,6 +57,9 @@
 	            if (tables.hasOwnProperty(property)) {
 	            	var columns = getWhatToGet(tables[property].columns);
 					tables[property].data = getTableData(tables[property].id, columns);
+					if(property == "tracker"){
+						tables[property].trips = getTripData();
+					}
 	            }
 	        }
 		}
@@ -98,11 +101,35 @@
 			};
 			return columns;
 		}
+		function getTripData(){
+			var trips = tables.tracker.data().distinct("TripID");
+			var tripObj = {};
+			console.log("jir");
+			for (var i = 0; i < trips.length; i++) {
+				tripObj[trips[i]] = {};
+			};
+			return tripObj;
+		}
+		function drawTrips(){
+			for (property in tables.tracker.trips) {
+	            if (tables.tracker.trips.hasOwnProperty(property)) {
+	            	drawTrip(property);
+	            }
+	        }
+		}
 		function drawTrip(trip){
 			query = {};
 			query.TripID = trip;
-			var trip = tables.tracker.data(query).order("Date").get();
-			
+			var trip = tables.tracker.data(query).order("timeStamp").get();
+			var points = [];
+			for (var i = 0; i < trip.length; i++) {
+				var point = [trip[i].Lat, trip[i].Lng];
+				points[i] = point;
+			};
+			var polyline_options = {
+			    color: '#000'
+			};
+			var polyline = L.polyline(points, polyline_options).addTo(map);
 		}
 	  	var tables = {
 	  		"survey":{
@@ -123,9 +150,7 @@
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		populateColumnNames();
 		populateTableData();
-		var trips = tables.tracker.data().distinct("TripID");
-		console.log(JSON.stringify(trips));
-		drawTrip(trips[0]);
+		drawTrips();
 		</script>
 	</body>
 </html>
