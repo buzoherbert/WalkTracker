@@ -2,8 +2,6 @@
 <html lang="en">
 	<meta charset="utf-8">
 	<head>
-		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
 		<style>
 		  body { margin:0; padding:0; }
 		  #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -11,8 +9,14 @@
 	</head>
 	<body>
 		<div id='map'></div>
+		<!-- Mapbox -->
+		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
 		<!-- Taffy DB -->
 		<script type="text/javascript" src="src/js/taffy-min.js"></script>
+		<!-- Flocktracker -->
+		<script type="text/javascript" src="src/js/FlockSON_min.js"></script>
+		<script type="text/javascript" src="src/js/FT_pr_mod_min.js"></script>
 		<script>	
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
