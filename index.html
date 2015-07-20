@@ -37,6 +37,10 @@
 			 		}
 			 	};
 			};
+			selector.onchange = function(){
+				var selected = this.options[this.selectedIndex].value;
+				styleTrips(selected);
+			}
 		}
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
@@ -143,13 +147,29 @@
 		}
 		function drawTrip(trip){
 			var polyline_options = {
-			    color: '#000'
+			    color: '#a50026'
 			};
 			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, polyline_options).addTo(map);
 		}
 		function replaceAll(find, replace, str) {
 		  return str.replace(new RegExp(find, 'g'), replace);
 		}
+		var defaultColors = [
+			"#a50026",
+			"#d73027",
+			"#f46d43",
+			"#fdae61",
+			"#fee090",
+			"#ffffbf",
+			"#e0f3f8",
+			"#abd9e9",
+			"#74add1",
+			"#4575b4",
+			"#313695"
+		];
+		var defaultLineStyle  = {
+			    color: '#000'
+		};
 	  	var tables = {
 	  		"survey":{
 	  			id:"1oLI1-lIhigT5Cqn7nTrlYCmzanNgKELpNbfeCBuG"
