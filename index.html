@@ -4,10 +4,15 @@
 	<head>
 		<style>
 		  body { margin:0; padding:0; }
-		  #map { position:absolute; top:0; bottom:0; width:100%; }
+		  #map { width:100%; height: 600px; }
 		</style>
 	</head>
 	<body>
+		<div>
+			<select id="trackerOptionsSelector">
+  				<option value="none">None</option>
+			</select>
+		</div>
 		<div id='map'></div>
 		<!-- Mapbox -->
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
@@ -18,6 +23,19 @@
 		<script type="text/javascript" src="src/js/FlockSON_min.js"></script>
 		<script type="text/javascript" src="src/js/FT_pr_mod_min.js"></script>
 		<script>	
+		function fillSelector(){
+			var chapters = project.getTrackerProject().getEndSurvey().getSurvey().getChapters();
+			var selector = document.getElementById("trackerOptionsSelector");
+			for (var i = 0; i < chapters.length; i++) {
+			 	var questions = chapters[i].getQuestions();
+			 	for (var j = 0; j < questions.length; j++) {
+			 		var option = document.createElement("option");
+			 		option.value = questions[j].getQuestionID();
+			 		option.innerHTML = questions[j].getQuestionID();
+			 		selector.add(option);
+			 	};
+			};
+		}
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
 		  	for (var i = 0; i < columns.length; i++){
@@ -149,6 +167,7 @@
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		var project = getProject("walk_proto");
+		fillSelector();
 		populateColumnNames();
 		populateTableData();
 		drawTrips();
