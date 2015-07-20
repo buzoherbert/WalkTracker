@@ -14,11 +14,6 @@
 		<!-- Taffy DB -->
 		<script type="text/javascript" src="src/js/taffy-min.js"></script>
 		<script>	
-		function getData(scope) {
-			var columnNames = getWhatToGet(dataFields[scope]);
-			var query = 'SELECT ' + columnNames + '  FROM ' + dataTableIDs[scope];
-			getFusionTablesData(query, "parseData" + scope);
-		}
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
 		  	for (var i = 0; i < columns.length; i++){
@@ -27,18 +22,6 @@
 		  	whatToGet = whatToGet.substring(0, whatToGet.length - 2);
 		  	return whatToGet;
 	  	}
-	  	function getFusionTablesData(query, callback){
-		  	var script = document.createElement('script');
-		  	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
-		  	url.push('sql=');
-		  	var encodedQuery = encodeURIComponent(query);
-		  	url.push(encodedQuery);
-		  	url.push('&callback=' + callback);
-		  	url.push('&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc');
-		  	script.src = url.join('');
-		  	var body = document.getElementsByTagName('body')[0];
-		  	body.appendChild(script);
-	  	} 
 	  	function httpGet(theUrl){
 		    var xmlHttp = new XMLHttpRequest();
 		    xmlHttp.open( "GET", theUrl, false );
