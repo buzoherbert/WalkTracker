@@ -58,7 +58,10 @@
 			var query = 'SELECT survey_json FROM ' + projectsTableID + " WHERE table_id='" + projectName + "'";
 			var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
 			var response = JSON.parse(httpGet(url));
-			var projectJSON = JSON.parse(response.rows[0][0]);
+			var projectLB = new FT_pr()
+			var project = new projectLB.project();
+			project.deserializeJSON(response.rows[0][0]);
+			return project;
 		}
 		function getTableData(tableID, whatToGet){
 			var query = 'SELECT ' + whatToGet + ' FROM ' + tableID;
