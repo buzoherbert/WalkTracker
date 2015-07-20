@@ -82,7 +82,7 @@
 				for (var i = 0; i < columns.length; i++) {
 					elem[columns[i]] = rows[j][i];
 					if(columns[i] == "Date"){
-						var date = Date.parse(rows[j][i]).toString();
+						var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
 						elem.timeStamp = date;
 					}
 				};
@@ -104,32 +104,35 @@
 		function getTripData(){
 			var trips = tables.tracker.data().distinct("TripID");
 			var tripObj = {};
-			console.log("jir");
 			for (var i = 0; i < trips.length; i++) {
 				tripObj[trips[i]] = {};
+				query = {};
+				query.TripID = trips[i];				
+				var trip = tables.tracker.data(query).order("timeStamp").get();
+				var points = [];
+				for (var j = 0; j < trip.length; j++) {
+					var point = [trip[j].Lat, trip[j].Lng];
+					points[j] = point;
+				};
+				tripObj[trips[i]].points = points;
 			};
 			return tripObj;
 		}
 		function drawTrips(){
 			for (property in tables.tracker.trips) {
 	            if (tables.tracker.trips.hasOwnProperty(property)) {
-	            	drawTrip(property);
+					drawTrip(property);
 	            }
 	        }
 		}
 		function drawTrip(trip){
-			query = {};
-			query.TripID = trip;
-			var trip = tables.tracker.data(query).order("timeStamp").get();
-			var points = [];
-			for (var i = 0; i < trip.length; i++) {
-				var point = [trip[i].Lat, trip[i].Lng];
-				points[i] = point;
-			};
 			var polyline_options = {
 			    color: '#000'
 			};
-			var polyline = L.polyline(points, polyline_options).addTo(map);
+			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, polyline_options).addTo(map);
+		}
+		function replaceAll(find, replace, str) {
+		  return str.replace(new RegExp(find, 'g'), replace);
 		}
 	  	var tables = {
 	  		"survey":{
