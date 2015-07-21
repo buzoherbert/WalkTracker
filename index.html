@@ -39,16 +39,41 @@
 			};
 			selector.onchange = function(){
 				var selected = this.options[this.selectedIndex].value;
-				styleTrips(selected);
+				styleTrips(selected, getPossibleOptions(selected));
 			}
 		}
-		function styleTrips (variable){
-			console.log(variable);
+		function styleTrips (variable, options){
 			if(variable in customStyles){
 
 			} else {
-				getPossibleOptions(variable);
+				var colors = getColors(options.length, defaultColors);
+				var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
+
+				for (var i = 0; i < tripsInSE.length; i++) {
+					if(tables.tracker.trips.hasOwnProperty(tripsInSE[i])){
+
+					}
+				};
+/*				for (property in tables.tracker.trips) {
+		            if (tables.tracker.trips.hasOwnProperty(property)) {
+		            	if(tables.trackerEndSurvey.data().distinct("TripID");
+						tables.tracker.trips[property].line
+		            }
+		        }*/
 			}
+		}
+		function getColors(numberOfColors, colorPool){
+			if(numberOfColors <= colorPool.length){
+				var colorArray = [];
+				var interval = (colorPool.length - 1)/(numberOfColors - 1);
+				for (var i = 0; i < numberOfColors; i++) {
+					var index = Math.floor(i * interval);
+					colorArray.push(colorPool[index]);
+				};
+			} else {
+				throw "Asking for more color than present in the pool";
+			}
+			return colorArray;
 		}
 		function getPossibleOptions (variable){
 			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
@@ -65,12 +90,21 @@
 					}
 				};
 			}
-			console.log(posAnswersInDB);
-			console.log(posAnswerTextInPr);
-			console.log(posAsnwerValueInPr);
 			var extraAns = posAnswersInDB.filter(function(x) { return posAsnwerValueInPr.indexOf(x) < 0 });
-
-			console.log(posAnswersInDB);
+			var options = [];
+			for (var i = 0; i < posAnswerTextInPr.length; i++) {
+				var opt = {};
+				opt.text = posAnswerTextInPr[i];
+				opt.value = posAsnwerValueInPr[i];
+				options.push(opt);
+			};
+			for (var i = 0; i < extraAns.length; i++) {
+				var opt = {};
+				opt.text = extraAns[i];
+				opt.value = extraAns[i];
+				options.push(opt);
+			};
+			return options;
 		}
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
