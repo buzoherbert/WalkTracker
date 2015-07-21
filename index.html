@@ -57,7 +57,6 @@
 							var answerIndex = getAnswerIndex(tripData[variable], options);
 							var lineStyle = {};
 							lineStyle.color = colors[answerIndex];
-							lineStyle.fillOpacity = 1;
 							tables.tracker.trips[trip].line.setStyle(lineStyle);
 	            		} else {
 	            			var lineStyle = {};
@@ -237,10 +236,7 @@
 	        }
 		}
 		function drawTrip(trip){
-			var polyline_options = {
-			    color: '#000',
-			};
-			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, polyline_options)
+			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, defaultLineStyle)
 			tables.tracker.trips[trip].line.addTo(map);
 		}
 		function replaceAll(find, replace, str) {
@@ -260,7 +256,9 @@
 			"#5e4fa2"
 		];
 		var defaultLineStyle  = {
-			    color: '#000'
+			    color: '#000',
+			    weight : 10,
+			    opacity : 1
 		};
 		var customStyles = {};
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
