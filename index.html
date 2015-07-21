@@ -54,27 +54,28 @@
 	            			query = {};
 							query.TripID = trip;				
 							var tripData = tables.trackerEndSurvey.data(query).get()[0];
-							var answerIndex = getAnswerIndex(variable, tripData, options);
-							console.log(query);
-							console.log(JSON.stringify(tripData));
+							var answerIndex = getAnswerIndex(tripData[variable], options);
+							var lineStyle = {};
+							lineStyle.color = colors[answerIndex];
+							lineStyle.fillOpacity = 1;
+							tables.tracker.trips[trip].line.setStyle(lineStyle);
+	            		} else {
+	            			var lineStyle = {};
+							lineStyle.color = "#000";
+							lineStyle.fillOpacity = 1;
+							tables.tracker.trips[trip].line.setStyle(lineStyle);
 	            		}
 	            	}
 	            }
-				for (var i = 0; i < tripsInSE.length; i++) {
-					if(tables.tracker.trips.hasOwnProperty(tripsInSE[i])){
-
-					}
-				};
-/*				for (property in tables.tracker.trips) {
-		            if (tables.tracker.trips.hasOwnProperty(property)) {
-		            	if(tables.trackerEndSurvey.data().distinct("TripID");
-						tables.tracker.trips[property].line
-		            }
-		        }*/
 			}
 		}
-		function getAnswerIndex(variable, tripData, options){
-
+		function getAnswerIndex(value, options){
+			for (var i = 0; i < options.length; i++) {
+				if ((options[i].value == value) || (options[i].text == value)){
+					return i;
+				}
+			};
+			throw "Value not in options";
 		}
 		function getColors(numberOfColors, colorPool){
 			if(numberOfColors <= colorPool.length){
@@ -237,10 +238,10 @@
 		}
 		function drawTrip(trip){
 			var polyline_options = {
-			    fillColor: '#fdae61',
-
+			    color: '#000',
 			};
-			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, polyline_options).addTo(map);
+			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, polyline_options)
+			tables.tracker.trips[trip].line.addTo(map);
 		}
 		function replaceAll(find, replace, str) {
 		  return str.replace(new RegExp(find, 'g'), replace);
