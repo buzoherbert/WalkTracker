@@ -48,7 +48,18 @@
 			} else {
 				var colors = getColors(options.length, defaultColors);
 				var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
-
+				for (trip in tables.tracker.trips) {
+	            	if (tables.tracker.trips.hasOwnProperty(trip)) {
+	            		if(tripsInSE.indexOf(trip) > 1){
+	            			query = {};
+							query.TripID = trip;				
+							var tripData = tables.trackerEndSurvey.data(query).get()[0];
+							var answerIndex = getAnswerIndex(variable, tripData, options);
+							console.log(query);
+							console.log(JSON.stringify(tripData));
+	            		}
+	            	}
+	            }
 				for (var i = 0; i < tripsInSE.length; i++) {
 					if(tables.tracker.trips.hasOwnProperty(tripsInSE[i])){
 
@@ -61,6 +72,9 @@
 		            }
 		        }*/
 			}
+		}
+		function getAnswerIndex(variable, tripData, options){
+
 		}
 		function getColors(numberOfColors, colorPool){
 			if(numberOfColors <= colorPool.length){
@@ -202,7 +216,7 @@
 			var tripObj = {};
 			for (var i = 0; i < trips.length; i++) {
 				tripObj[trips[i]] = {};
-				query = {};
+				var query = {};
 				query.TripID = trips[i];				
 				var trip = tables.tracker.data(query).order("timeStamp").get();
 				var points = [];
