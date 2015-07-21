@@ -47,10 +47,30 @@
 			if(variable in customStyles){
 
 			} else {
-				var surv = project.getTrackerProject().getEndSurvey().getSurvey();
-				var q = surv.getQuestionById(variable);
-				console.log(q.serializeJSON());
+				getPossibleOptions(variable);
 			}
+		}
+		function getPossibleOptions (variable){
+			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
+			var q = surv.getQuestionById(variable);
+			var posAnswersInDB = tables.trackerEndSurvey.data().order(variable + " asec").distinct(variable);
+			var posAnswerTextInPr = [];
+			var posAsnwerValueInPr = [];
+			if (q.getKind() == "MC"){
+				var answers = q.getAnswers();
+				for (var i = 0; i < answers.length; i++) {
+					if(answers[i].getValue() != null){
+						posAnswerTextInPr[i] = answers[i].getAnswerText();
+						posAsnwerValueInPr[i] = answers[i].getValue();
+					}
+				};
+			}
+			console.log(posAnswersInDB);
+			console.log(posAnswerTextInPr);
+			console.log(posAsnwerValueInPr);
+			var extraAns = posAnswersInDB.filter(function(x) { return posAsnwerValueInPr.indexOf(x) < 0 });
+
+			console.log(posAnswersInDB);
 		}
 		function getWhatToGet(columns){
 		  	var whatToGet = "";
