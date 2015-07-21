@@ -117,6 +117,18 @@
 			};
 			return db;
 		}
+		function initializeTables(){
+			var tables = {};
+			tables.trackerEndSurvey = {};
+			tables.trackerEndSurvey.id = project.getTrackerProject().getEndSurvey().getTableID();
+			tables.trackerStartSurvey = {};
+			tables.trackerStartSurvey.id = project.getTrackerProject().getStartSurvey().getTableID();
+			tables.tracker = {};
+			tables.tracker.id = project.getTrackerProject().getTracker().getTableID();
+			tables.survey = {};
+			tables.survey.id = project.getSurveyProject().getTableID();
+			return tables;
+		}
 		function parseColumnNames(response){
 			var obj = JSON.parse(response);
 			var items = obj.items;
@@ -179,25 +191,11 @@
 			    color: '#000'
 		};
 		var customStyles = {};
-	  	var tables = {
-	  		"survey":{
-	  			id:"1oLI1-lIhigT5Cqn7nTrlYCmzanNgKELpNbfeCBuG"
-	  		},
-	  		"tracker":{
-	  			id:"1cjN7VwSnP2V-0Dbu-KfGBL3hcbMs4zXNcD3EqJU5"
-	  		}
-	  		,
-	  		"trackerStartSurvey":{
-	  			id:"1tbElaK8BjzKh58l94wrLXfHhET_Zz74rfnVcg0iq"
-	  		},
-	  		"trackerEndSurvey":{
-	  			id:"14WYPGQNCBpK2omFnO5zMq53UBuwhxcuCoohSQf3d"
-	  		}
-	  	}
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
 		var project = getProject("walk_proto");
+		var tables = initializeTables();
 		fillSelector();
 		populateColumnNames();
 		populateTableData();
