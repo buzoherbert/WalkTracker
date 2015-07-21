@@ -47,6 +47,9 @@
 			if(variable in customStyles){
 
 			} else {
+				var surv = project.getTrackerProject().getEndSurvey().getSurvey();
+				var q = surv.getQuestionById(variable);
+				console.log(q.serializeJSON());
 			}
 		}
 		function getWhatToGet(columns){
