@@ -237,7 +237,7 @@
 		}
 		function drawTrip(trip){
 			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, defaultLineStyle)
-			tables.tracker.trips[trip].line.addTo(map);
+			tables.tracker.trips[trip].line.addTo(tripLayer);
 		}
 		function replaceAll(find, replace, str) {
 		  return str.replace(new RegExp(find, 'g'), replace);
@@ -263,13 +263,15 @@
 		var customStyles = {};
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
-		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga').setView([1.339, 103.74], 18);
+		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga');
+		var tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
 		var project = getProject("walk_proto");
 		var tables = initializeTables();
 		fillSelector();
 		populateColumnNames();
 		populateTableData();
 		drawTrips();
+		map.fitBounds(tripLayer.getBounds());
 		</script>
 	</body>
 </html>
