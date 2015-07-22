@@ -76,6 +76,25 @@
 			};
 		}
 
+		function showTripData(tripID){
+			query = {};
+			query.TripID = tripID;				
+			var tripData = tables.trackerEndSurvey.data(query).get()[0];
+			var div = document.getElementById("infoBox");
+			div.innerHTML = "<h3>" + tripID + "</h3>";	
+			for (var i = 0; i < mainInfo.length; i++) {
+				var name = document.createElement("b");
+				name.innerHTML = mainInfo[i] + " : ";
+				var value = document.createElement("span");
+				value.innerHTML = tripData[mainInfo[i]];
+				var line = document.createElement("span");
+				line.appendChild(name);
+				line.appendChild(value);
+				div.appendChild(line);
+				div.appendChild(document.createElement("br")); 
+			};
+		}
+
 		function getSquare(color) {	
 		    	var c = document.createElement("canvas")
 				var ctx = c.getContext("2d");
@@ -292,15 +311,7 @@
 			})
 		}
 		function onTripClick(tripID){
-			query = {};
-			query.TripID = tripID;				
-			var tripData = tables.trackerEndSurvey.data(query).get()[0];
 			showTripData(tripID);
-		}
-		function showTripData(tripID){
-			var div = document.getElementById("infoBox");
-			div.innerHTML = "<h3>" + tripID + "</h3>";	
-
 		}
 		function replaceAll(find, replace, str) {
 		  return str.replace(new RegExp(find, 'g'), replace);
