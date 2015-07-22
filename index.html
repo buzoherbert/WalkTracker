@@ -60,7 +60,7 @@
 				var line = document.createElement("span");
 				line.appendChild(getSquare(colors[i]));
 				var text = document.createElement("span");
-				text.innerHTML = options[i].value;
+				text.innerHTML = options[i].text;
 				line.appendChild(text);
 				div.appendChild(line);
 				if(i != options.length - 1){
@@ -75,7 +75,6 @@
 				c.width = 20;
 				c.height = 20;
 				ctx.rect(0, 0, 20, 20);
-				console.log(color);
 				ctx.fillStyle = color;
 				ctx.fill();
 				return c;
@@ -140,6 +139,9 @@
 					if(answers[i].getValue() != null){
 						posAnswerTextInPr[i] = answers[i].getAnswerText();
 						posAsnwerValueInPr[i] = answers[i].getValue();
+					} else {
+						posAnswerTextInPr[i] = answers[i].getAnswerText();
+						posAsnwerValueInPr[i] = answers[i].getAnswerText();
 					}
 				};
 			}
