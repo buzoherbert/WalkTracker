@@ -93,6 +93,8 @@
 				div.appendChild(line);
 				div.appendChild(document.createElement("br")); 
 			};
+			var elemToDelete = mainInfo.concat(removeInfo);
+			otherData = deleteKeysFromObject(tripData, elemToDelete);
 		}
 
 		function getSquare(color) {	
@@ -104,6 +106,18 @@
 				ctx.fillStyle = color;
 				ctx.fill();
 				return c;
+		}
+
+		// Deletes the keys in keyArray from given obj and returns the clean obj.
+		function deleteKeysFromObject(obj, keyArray){
+			console.log(JSON.stringify(obj));
+			for (var i = 0; i < keyArray.length; i++) {
+				if(obj.hasOwnProperty(keyArray[i])){
+					delete obj[keyArray[i]];
+				}
+			};
+			console.log(JSON.stringify(obj));
+			return obj;
 		}
 
 
