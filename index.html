@@ -7,7 +7,8 @@
 		  #map {position:absolute; top:0; bottom:0; width:100%; }
 		  #layerOptions {position: absolute; top:30px; right:30px;}
 		  #tripKey {position: absolute; bottom:30px; left:30px; background:rgba(255,255,255,0.5);}
-		  #infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,255,255,0.5);}
+		  #infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,255,255,0.5);}	
+		  .tripInfoThumbnail {max-height:100px; max-width:100px}
 		</style>
 	</head>
 	<body>
@@ -95,15 +96,30 @@
 			};
 			var elemToDelete = mainInfo.concat(removeInfo);
 			var otherData = deleteKeysFromObject(tripData, elemToDelete);
+			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
 			for (data in otherData) {
 	            if (otherData.hasOwnProperty(data)) {
+	            	var q = surv.getQuestionById(data);
+	            	var isPicture = false;
+	            	if(q != null){
+	            		if(q.getKind() == "IM"){
+	            			isPicture = true;
+	            		}
+	            	}
 	            	var name = document.createElement("b");
 					name.innerHTML = data + " : ";
-					var value = document.createElement("span");
-					value.innerHTML = otherData[data];
+					var content = null;
+	            	if(isPicture){
+	            		content = document.createElement("img");
+						content.src = otherData[data];
+						content.className = "tripInfoThumbnail";
+	            	} else {
+						content = document.createElement("span");
+						content.innerHTML = otherData[data];
+	            	}
 					var line = document.createElement("span");
 					line.appendChild(name);
-					line.appendChild(value);
+					line.appendChild(content);
 					div.appendChild(line);
 					div.appendChild(document.createElement("br")); 
 	            }
