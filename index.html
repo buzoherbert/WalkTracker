@@ -13,7 +13,7 @@
   				<option value="none">None</option>
 			</select>
 		</div>
-		<div id="Key">Key!</div>
+		<div id="tripKey">Key!</div>
 		<div id='map'></div>
 		<!-- Mapbox -->
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
@@ -44,13 +44,43 @@
 			}
 		}
 
-		function colorCodeTrips (selected){
+		function colorCodeTrips(selected){
 				var options = getPossibleOptions(selected);
 				var colors = getColors(options.length, defaultColors);
+				showTripKey(selected, options, colors);
 				styleTrips(selected, options, colors);
 		}
 
-		function styleTrips (variable, options, colors){
+		function showTripKey(variable, options, colors){
+			var div = document.getElementById("tripKey");
+			div.innerHTML = "<h3>" + variable + "</h3>";
+			for (var i = 0; i < options.length; i++) {
+				var line = document.createElement("span");
+				line.appendChild(getSquare(colors[i]));
+				var text = document.createElement("span");
+				text.innerHTML = options[i].value;
+				line.appendChild(text);
+				div.appendChild(line);
+				if(i != options.length - 1){
+					div.appendChild(document.createElement("br"));
+				}
+			};
+		}
+
+		function getSquare(color) {	
+		    	var c = document.createElement("canvas")
+				var ctx = c.getContext("2d");
+				c.width = 20;
+				c.height = 20;
+				ctx.rect(0, 0, 20, 20);
+				console.log(color);
+				ctx.fillStyle = color;
+				ctx.fill();
+				return c;
+		}
+
+
+		function styleTrips(variable, options, colors){
 			if(variable in customStyles){
 
 			} else {
