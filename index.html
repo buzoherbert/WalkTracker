@@ -8,11 +8,12 @@
 		</style>
 	</head>
 	<body>
-		<div>
+		<div id="layerOptions">
 			<select id="trackerOptionsSelector">
   				<option value="none">None</option>
 			</select>
 		</div>
+		<div id="Key">Key!</div>
 		<div id='map'></div>
 		<!-- Mapbox -->
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
@@ -39,14 +40,20 @@
 			};
 			selector.onchange = function(){
 				var selected = this.options[this.selectedIndex].value;
-				styleTrips(selected, getPossibleOptions(selected));
+				colorCodeTrips(selected);
 			}
 		}
-		function styleTrips (variable, options){
+
+		function colorCodeTrips (selected){
+				var options = getPossibleOptions(selected);
+				var colors = getColors(options.length, defaultColors);
+				styleTrips(selected, options, colors);
+		}
+
+		function styleTrips (variable, options, colors){
 			if(variable in customStyles){
 
 			} else {
-				var colors = getColors(options.length, defaultColors);
 				var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
 				for (trip in tables.tracker.trips) {
 	            	if (tables.tracker.trips.hasOwnProperty(trip)) {
@@ -272,6 +279,10 @@
 		populateTableData();
 		drawTrips();
 		map.fitBounds(tripLayer.getBounds());
+
+
+
+
 		</script>
 	</body>
 </html>
