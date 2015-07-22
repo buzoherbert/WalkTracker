@@ -7,7 +7,8 @@
 		  #map {position:absolute; top:0; bottom:0; width:100%; }
 		  #layerOptions {position: absolute; top:30px; right:30px;}
 		  #tripKey {position: absolute; bottom:30px; left:30px; background:rgba(255,255,255,0.5);}
-		  #infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,255,255,0.5);}
+		  #infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,255,255,0.5);}	
+		  .tripInfoThumbnail {max-height:100px; max-width:100px}
 		</style>
 	</head>
 	<body>
@@ -111,10 +112,10 @@
 	            	if(isPicture){
 	            		content = document.createElement("img");
 						content.src = otherData[data];
+						content.className = "tripInfoThumbnail";
 	            	} else {
 						content = document.createElement("span");
 						content.innerHTML = otherData[data];
-						content.class = "tripInfoThumbnail"
 	            	}
 					var line = document.createElement("span");
 					line.appendChild(name);
