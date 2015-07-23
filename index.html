@@ -347,7 +347,11 @@
 	        }
 		}
 		function drawTrip(trip){
-			tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, defaultLineStyle)
+			if(tables.tracker.trips[trip].points.length < 3){
+				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, onePointTripStyle);
+			} else {
+				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, defaultLineStyle);
+			}
 			tables.tracker.trips[trip].line.addTo(tripLayer);
 			tables.tracker.trips[trip].line.tripID = trip;
 			tables.tracker.trips[trip].line.on("click", function(){
@@ -391,12 +395,21 @@
 		];
 
 		var defaultLineStyle  = {
-			    color: '#000',
-			    weight : 8,
-			    opacity : 0.8,
-			    lineCap: "butt",
-			    dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
+			color: '#000',
+			weight : 8,
+			opacity : 0.8,
+			lineCap: "butt",
+			lineJoin: "round",
+			dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
 		};
+		var onePointTripStyle = {
+			color: '#000',
+			weight : 8,
+			opacity : 0.8,
+			lineCap: "square",
+			lineJoin: "round",
+			dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
+		}
 		var customStyles = {};
 		var mainInfo = ["Username", "TripID"];
 		var removeInfo = ["Location", "Lat", "Lng", "Alt", "Speed", "___id", "___s", "timeStamp"];
