@@ -7,35 +7,86 @@
 		<style>
 			html *
 			{
-			   font-size: 1em !important;
-			   color: #000 !important;
+			   font-size: 1em;
+			   color: #000;
 			   font-family: 'Raleway', Helvetica, Arial, sans-serif !important;
 			}
-			body { margin:0; padding:0;  width:100%; height: 100%; }
-			#map {position:absolute; top:0; bottom:0; width:100%; }
-			#layerOptions {position: absolute; top:30px; right:30px;}
+			body { 
+				margin:0;
+				padding:0;
+				width:100%;
+				height: 100%;
+			}
+			#map {position:absolute;
+				top:0;
+				bottom:0;
+				width:100%;
+			}
+			#layerOptions {position: absolute;
+				top:30px;
+				right:30px;
+			}
 			#tripKey {
 				position: absolute;
 				bottom:30px;
 				left:30px;
 				background:rgba(255,0,0,0.75);
 				padding:15px; border-radius: 5px;
-				transition: background 0.7s ease-out;
-			 	-moz-transition: background 0.7s ease-out;
-			    -webkit-transition: background 0.7s ease-out;
-			    -o-transition: background 0.7s ease-out;}
-			#infoBox {position: absolute; bottom:30px; right:30px; background:rgba(25,59,104,0.75); max-height:400px; width: 400px; overflow: hidden; padding:15px; border-radius: 2px;
-				transition: background 0.7s ease-out;
-			 	-moz-transition: background 0.7s ease-out;
-			    -webkit-transition: background 0.7s ease-out;
-			    -o-transition: background 0.7s ease-out;
+				transition: background 0.7s ease-in-out;
+			 	-moz-transition: background 0.7s ease-in-out;
+			    -webkit-transition: background 0.7s ease-in-out;
+			    -o-transition: background 0.7s ease-in-out;
+			}
+			#infoBox {position: absolute;
+				bottom:30px;
+				right:30px;
+				background:rgba(25,59,104,0.75);
+				max-height:400px; width: 400px;
+				overflow: hidden; padding:15px;
+				border-radius: 2px;
+				transition: all 0.7s ease-in-out;
+			 	-moz-transition: all 0.7s ease-in-out;
+			    -webkit-transition: all 0.7s ease-in-out;
+			    -o-transition: all 0.7s ease-in-out;
 			}	
-			#infoBox:hover {overflow-y:scroll; background:rgba(25,59,104,1)}
-			#tripKey:hover {background:rgba(255,0,0,1)}
-			.tripInfoThumbnail {max-height:370px; max-width:370px; border-color: white; border-width: 15px; border-style: solid;}
-			.tripInfoThumbnailContainer {height:400px; width:100%; text-align: center;}
-			.keyText {margin: 5px;}
-			.keyColor {border-color: white; border-width: 2px; border-style: solid;}
+			#infoBox:hover {
+				overflow-y:scroll;
+				background:rgba(25,59,104,1);
+				color: white;
+			}
+			#infoBox h3,#infoBox span {
+				color: black;
+				transition: all 0.7s ease-in-out;
+			 	-moz-transition: all 0.7s ease-in-out;
+			    -webkit-transition: all 0.7s ease-in-out;
+			    -o-transition: all 0.7s ease-in-out;
+			}
+			#infoBox:hover h3, #infoBox:hover span {
+				color: white;
+			}
+			#tripKey:hover {
+				background:rgba(255,0,0,1)
+			}
+			.tripInfoThumbnail {
+				max-height:370px;
+				max-width:370px;
+				border-color: white;
+				border-width: 15px;
+				border-style: solid;
+			}
+			.tripInfoThumbnailContainer {
+				height:400px;
+				width:100%;
+				text-align: center;
+			}
+			.keyText {
+				margin: 5px;
+			}
+			.keyColor {
+				border-color: white;
+				border-width: 2px;
+				border-style: solid;
+			}
 		</style>
 	</head>
 	<body>
@@ -514,10 +565,6 @@
 		populateTableData();
 		drawTrips();
 		map.fitBounds(tripLayer.getBounds());
-
-
-
-
 		</script>
 	</body>
 </html>
