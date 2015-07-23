@@ -32,17 +32,19 @@
 				left:30px;
 				background:rgba(255,0,0,0.75);
 				padding:15px; border-radius: 5px;
-				transition: background 0.7s ease-in-out;
-			 	-moz-transition: background 0.7s ease-in-out;
-			    -webkit-transition: background 0.7s ease-in-out;
-			    -o-transition: background 0.7s ease-in-out;
+				transition: all 0.7s ease-in-out;
+			 	-moz-transition: all 0.7s ease-in-out;
+			    -webkit-transition: all 0.7s ease-in-out;
+			    -o-transition: all 0.7s ease-in-out;
 			}
 			#infoBox {position: absolute;
 				bottom:30px;
 				right:30px;
 				background:rgba(25,59,104,0.75);
-				max-height:400px; width: 400px;
-				overflow: hidden; padding:15px;
+				max-height:400px;
+				width: 400px;
+				overflow: hidden; 
+				padding:15px;
 				border-radius: 2px;
 				transition: all 0.7s ease-in-out;
 			 	-moz-transition: all 0.7s ease-in-out;
@@ -54,14 +56,14 @@
 				background:rgba(25,59,104,1);
 				color: white;
 			}
-			#infoBox h3,#infoBox span {
+			#infoBox h3,#infoBox span, #tripKey h3, #tripKey span {
 				color: black;
 				transition: all 0.7s ease-in-out;
 			 	-moz-transition: all 0.7s ease-in-out;
 			    -webkit-transition: all 0.7s ease-in-out;
 			    -o-transition: all 0.7s ease-in-out;
 			}
-			#infoBox:hover h3, #infoBox:hover span {
+			#infoBox:hover h3, #infoBox:hover span, #tripKey:hover h3, #tripKey:hover span {
 				color: white;
 			}
 			#tripKey:hover {
@@ -73,6 +75,10 @@
 				border-color: white;
 				border-width: 15px;
 				border-style: solid;
+				transition: all 0.7s ease-in-out;
+			 	-moz-transition: all 0.7s ease-in-out;
+			    -webkit-transition: all 0.7s ease-in-out;
+			    -o-transition: all 0.7s ease-in-out;
 			}
 			.tripInfoThumbnailContainer {
 				height:400px;
@@ -475,6 +481,7 @@
 			})
 		}
 		function onTripClick(tripID){
+			map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
 			showTripData(tripID);
 		}
 		function replaceAll(find, replace, str) {
