@@ -94,6 +94,18 @@
 				div.appendChild(line);
 				div.appendChild(document.createElement("br")); 
 			};
+				var name = document.createElement("b");
+				name.innerHTML = "Total distance" + " : ";
+				var value = document.createElement("span");
+				value.innerHTML = (tables.tracker.trips[tripID].totalDistance * 1000) + " m";
+				var line = document.createElement("span");
+				line.appendChild(name);
+				line.appendChild(value);
+				div.appendChild(line);
+				div.appendChild(document.createElement("br")); 
+
+
+
 			var elemToDelete = mainInfo.concat(removeInfo);
 			var otherData = deleteKeysFromObject(tripData, elemToDelete);
 			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
