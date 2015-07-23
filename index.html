@@ -200,9 +200,6 @@
 			line.appendChild(value);
 			div.appendChild(line);
 			div.appendChild(document.createElement("br"));
-
-
-
 			var elemToDelete = mainInfo.concat(removeInfo);
 			var otherData = deleteKeysFromObject(tripData, elemToDelete);
 			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
@@ -231,7 +228,13 @@
 						line.appendChild(content);
 	            	} else {
 						content = document.createElement("span");
-						content.innerHTML = otherData[data];
+						var surv = project.getTrackerProject().getEndSurvey().getSurvey();
+						var answer = getAnswerByValue(surv, data, otherData[data]);
+						if (answer != null){
+							content.innerHTML = answer.getAnswerText();
+						} else {
+							content.innerHTML = otherData[data];
+						}
 						line.appendChild(name);
 						line.appendChild(content);
 	            	}
@@ -239,6 +242,22 @@
 					div.appendChild(document.createElement("br")); 
 	            }
 	        }
+		}
+
+		function getAnswerByValue(survey, questionID, value){
+			var question = survey.getQuestionById(questionID);
+			var answer = null;
+			if (question != null){
+				if(((question.getKind() == "MC") || (question.getKind() == "OL")) || (question.getKind() == "CB") ){
+					var answers = question.getAnswers();
+					for (var i = 0; i < answers.length; i++) {
+						if(answers[i].getValue() == value){
+							answer = answers[i];
+						}
+					};
+				}
+			}
+			return answer;
 		}
 
 		function getSquare(color) {	
