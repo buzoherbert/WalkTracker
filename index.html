@@ -94,15 +94,25 @@
 				div.appendChild(line);
 				div.appendChild(document.createElement("br")); 
 			};
-				var name = document.createElement("b");
-				name.innerHTML = "Total distance" + " : ";
-				var value = document.createElement("span");
-				value.innerHTML = (tables.tracker.trips[tripID].totalDistance * 1000) + " m";
-				var line = document.createElement("span");
-				line.appendChild(name);
-				line.appendChild(value);
-				div.appendChild(line);
-				div.appendChild(document.createElement("br")); 
+			var name = document.createElement("b");
+			name.innerHTML = "Total distance" + " : ";
+			var value = document.createElement("span");
+			value.innerHTML = (tables.tracker.trips[tripID].totalDistance * 1000) + " m";
+			var line = document.createElement("span");
+			line.appendChild(name);
+			line.appendChild(value);
+			div.appendChild(line);
+			div.appendChild(document.createElement("br")); 
+
+			var name = document.createElement("b");
+			name.innerHTML = "Number of points" + " : ";
+			var value = document.createElement("span");
+			value.innerHTML = tables.tracker.trips[tripID].points.length;
+			var line = document.createElement("span");
+			line.appendChild(name);
+			line.appendChild(value);
+			div.appendChild(line);
+			div.appendChild(document.createElement("br"));
 
 
 
@@ -369,7 +379,7 @@
 	        }
 		}
 		function drawTrip(trip){
-			if(tables.tracker.trips[trip].points.length < 3){
+			if(tables.tracker.trips[trip].totalDistance < 0.01){
 				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, onePointTripStyle);
 			} else {
 				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, defaultLineStyle);
