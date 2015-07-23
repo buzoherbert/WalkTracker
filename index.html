@@ -2,20 +2,23 @@
 <html lang="en">
 	<meta charset="utf-8">
 	<head>
+		<link href='https://fonts.googleapis.com/css?family=Raleway:300,400,500'
+		rel='stylesheet' type='text/css'>
 		<style>
 			html *
 			{
 			   font-size: 1em !important;
 			   color: #000 !important;
-			   font-family: Arial !important;
+			   font-family: 'Raleway', Helvetica, Arial, sans-serif !important;
 			}
 			body { margin:0; padding:0;  width:100%; height: 100%; }
 			#map {position:absolute; top:0; bottom:0; width:100%; }
 			#layerOptions {position: absolute; top:30px; right:30px;}
-			#tripKey {position: absolute; bottom:30px; left:30px; background:rgba(255,255,255,0.5); padding:15px;}
-			#infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,255,255,0.5); max-height:400px; width: 400px; overflow: auto; padding:15px;}	
+			#tripKey {position: absolute; bottom:30px; left:30px; background:rgba(255,0,0,0.75); padding:15px; border-radius: 15px;}
+			#infoBox {position: absolute; bottom:30px; right:30px; background:rgba(255,0,0,0.75); max-height:400px; width: 400px; overflow: auto; padding:15px; border-radius: 15px;}	
 			.tripInfoThumbnail {max-height:370px; max-width:370px;}
-			#keyText {margin: 5px;}
+			.tripInfoThumbnailContainer {height:370px; width:100%; text-align: center;};
+			.keyText {padding: 5px;}
 		</style>
 	</head>
 	<body>
@@ -141,9 +144,12 @@
 					name.innerHTML = data + " : ";
 					var content = null;
 	            	if(isPicture){
-	            		content = document.createElement("img");
-						content.src = otherData[data];
-						content.className = "tripInfoThumbnail";
+	            		image = document.createElement("img");
+						image.src = otherData[data];
+						image.className = "tripInfoThumbnail";
+						content = document.createElement("div");
+						content.appendChild(image);
+						content.className = "tripInfoThumbnailContainer";
 						line.appendChild(name);
 						line.appendChild(document.createElement("br"))
 						line.appendChild(content);
