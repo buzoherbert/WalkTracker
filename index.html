@@ -171,6 +171,7 @@
 			query = {};
 			query.TripID = tripID;				
 			var tripData = tables.trackerEndSurvey.data(query).get()[0];
+			console.log(JSON.stringify(tripData));
 			var div = document.getElementById("infoBox");
 			div.innerHTML = "<h3>" + tripID + "</h3>";	
 			for (var i = 0; i < mainInfo.length; i++) {
@@ -187,7 +188,7 @@
 			var name = document.createElement("b");
 			name.innerHTML = "Total distance" + " : ";
 			var value = document.createElement("span");
-			value.innerHTML = (tables.tracker.trips[tripID].totalDistance * 1000) + " m";
+			value.innerHTML = ((tables.tracker.trips[tripID].totalDistance * 1000).toFixed(2)) + " m";
 			var line = document.createElement("span");
 			line.appendChild(name);
 			line.appendChild(value);
@@ -275,15 +276,18 @@
 		}
 
 		// Deletes the keys in keyArray from given obj and returns the clean obj.
+		// It only checks for the outermost layer of keys.
 		function deleteKeysFromObject(obj, keyArray){
-			for (var i = 0; i < keyArray.length; i++) {
-				if(obj.hasOwnProperty(keyArray[i])){
-					delete obj[keyArray[i]];
-				}
-			};
-			return obj;
+			var newObj = {};
+			for (data in obj) {
+	            if (obj.hasOwnProperty(data)) {
+	            	if(keyArray.indexOf(data) == -1){
+	            		newObj[data] = obj[data];
+	            	}
+	            }
+	        }
+			return newObj;
 		}
-
 
 		function styleTrips(variable, options, colors){
 			if(variable in customStyles){
