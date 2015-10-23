@@ -143,6 +143,33 @@
 				}
 			}
 		}
+		function fillUsersSelector(){
+			var usersInSE = tables.trackerEndSurvey.data().order("Username asec").distinct("Username");
+			console.log(usersInSE);
+			var selector = document.getElementById("userSelector");
+			for (var j = 0; j < usersInSE.length; j++) {
+			 	var option = document.createElement("option");
+			 	option.value = usersInSE[j];
+				option.innerHTML = usersInSE[j];
+				selector.add(option);
+			};
+			selector.onchange = function(){
+				if(this.selectedIndex == 0){
+					map.removeLayer(tripLayer);
+					tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
+					drawTrips(tables.tracker.trips);
+					map.fitBounds(tripLayer.getBounds());
+				} else {
+					map.removeLayer(tripLayer);
+					tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
+					var selectedUser = this.options[this.selectedIndex].value;
+					var userTrips = getTripsByUser(selectedUser);
+					console.log(userTrips);
+					drawTrips(userTrips);
+					map.fitBounds(tripLayer.getBounds());
+				}
+			}
+		}
 
 		function colorCodeTrips(selected){
 				var options = getPossibleOptions(selected);
@@ -490,14 +517,15 @@
 			}
 			return totalDistance;
 		}
-		function drawTrips(){
-			for (property in tables.tracker.trips) {
-	            if (tables.tracker.trips.hasOwnProperty(property)) {
+		function drawTrips(trips){
+			for (property in trips) {
+	            if (trips.hasOwnProperty(property)) {
 					drawTrip(property);
 	            }
 	        }
 		}
 		function drawTrip(trip){
+			console.log(trip);
 			if(tables.tracker.trips[trip].totalDistance < 0.01){
 				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, onePointTripStyle);
 			} else {
@@ -538,6 +566,17 @@
 		  Number.prototype.toRad = function() {
 		    return this * Math.PI / 180;
 		  }
+		}
+
+		function getTripsByUser(user){
+			var userTrips = tables.tracker.data({"Username":user}).distinct("TripID");
+			var userTripsObj = {};
+			for (var i = 0; i < userTrips.length; i++) {
+				if(tables.tracker.trips.hasOwnProperty(userTrips[i])){
+					userTripsObj[userTrips[i]] = tables.tracker.trips[userTrips[i]];
+				}
+			};
+			return userTripsObj;
 		}
 
 
@@ -599,7 +638,8 @@
 		fillQuestionSelector();
 		populateColumnNames();
 		populateTableData();
-		drawTrips();
+		fillUsersSelector();
+		drawTrips(tables.tracker.trips);
 		map.fitBounds(tripLayer.getBounds());
 		</script>
 	</body>
