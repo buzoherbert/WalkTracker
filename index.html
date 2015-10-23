@@ -101,8 +101,11 @@
 	<body>
 		<div id='map'></div>
 		<div id="layerOptions">
-			<select id="trackerOptionsSelector">
+			<select id="questionFilterSelector">
   				<option value="none">Choose a question!</option>
+			</select>
+			<select id="userSelector">
+  				<option value="none">Filer by user</option>
 			</select>
 		</div>
 		<div id="tripKey"></div>		
@@ -116,9 +119,9 @@
 		<script type="text/javascript" src="src/js/FlockSON_min.js"></script>
 		<script type="text/javascript" src="src/js/FT_pr_mod_min.js"></script>
 		<script>	
-		function fillSelector(){
+		function fillQuestionSelector(){
 			var chapters = project.getTrackerProject().getEndSurvey().getSurvey().getChapters();
-			var selector = document.getElementById("trackerOptionsSelector");
+			var selector = document.getElementById("questionFilterSelector");
 			for (var i = 0; i < chapters.length; i++) {
 			 	var questions = chapters[i].getQuestions();
 			 	for (var j = 0; j < questions.length; j++) {
@@ -593,7 +596,7 @@
 		var tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
 		var project = getProject("walktracker");
 		var tables = initializeTables();
-		fillSelector();
+		fillQuestionSelector();
 		populateColumnNames();
 		populateTableData();
 		drawTrips();
