@@ -155,7 +155,15 @@
 				
 				for (var i = 0; i < trackerStartSurveys.length; i++) {
 				 	if(trackerStartSurveys[i].TripID == "null"){
-				 		findPossibleTripIdMatches(trackerStartSurveys[i]);
+				 		var matches = findPossibleTripIdMatches(trackerStartSurveys[i]);
+				 		if(matches.length != 0){
+				 			var query = {};
+				 			query.Username = trackerStartSurveys[i].Username;
+				 			query.timeStamp = trackerStartSurveys[i].timeStamp;
+				 			var updateQuery = {};
+				 			updateQuery.TripID = matches[0];
+				 			tables.trackerStartSurvey.data(query).update(updateQuery);
+						}
 				 	}
 				};
 			}
@@ -164,7 +172,7 @@
 				var query = {};
 				query.Username = tsSurvey.Username;
 				var trips = tables.tracker.data(query).order("timeStamp").get();
-				var tripsClose = findTripsCloseTo(tsSurvey, trips);
+				return tripIdsClose = findTripsCloseTo(tsSurvey, trips);
 
 
 			}
@@ -174,12 +182,69 @@
 				//Checking distance closeness, 100 m to be safe.
 				for (var i = 0; i < tripsArray.length; i++) {
 					var d = getDistance(survey.Lat, survey.Lng, tripsArray[i].Lat, tripsArray[i].Lng);
-					if (d < 0.100){
-						tripIdsClose.push(tripsArray[i].TripID);
+					if (d < 0.050){
+						timeDifference = Math.abs(survey.timeStamp - tripsArray[i].timeStamp);
+						if(timeDifference < 90000){
+							tripIdsClose.push(tripsArray[i].TripID);
+						}
 					}
 				};
-				console.log(tripIdsClose);
+				return tripIdsClose;
 			}
+			function convertArrayOfObjectsToCSV(args) {  
+		        var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+		        data = args.data || null;
+		        if (data == null || !data.length) {
+		            return null;
+		        }
+
+		        columnDelimiter = args.columnDelimiter || ',';
+		        lineDelimiter = args.lineDelimiter || '\n';
+
+		        keys = Object.keys(data[0]);
+
+		        result = '';
+		        result += keys.join(columnDelimiter);
+		        result += lineDelimiter;
+
+		        data.forEach(function(item) {
+		            ctr = 0;
+		            keys.forEach(function(key) {
+		                if (ctr > 0) result += columnDelimiter;
+
+		                result += item[key];
+		                ctr++;
+		            });
+		            result += lineDelimiter;
+		        });
+
+		        return result;
+		    }
+			function downloadCSV(object, args) {  
+		        var data, filename, link;
+		        var csv = convertArrayOfObjectsToCSV({
+		            data: object
+		        });
+		        if (csv == null) return;
+
+		        filename = args.filename || 'export.csv';
+
+		        if (!csv.match(/^data:text\/csv/i)) {
+		            csv = 'data:text/csv;charset=utf-8,' + csv;
+		        }
+		        data = encodeURI(csv);
+
+		        link = document.createElement('a');
+		        link.setAttribute('href', data);
+		        link.setAttribute('download', filename);
+		        link.click();
+		    }
+
+
+
+
+
 
 
 
@@ -189,6 +254,7 @@
 			populateColumnNames();
 			populateTableData();
 			fixTrackerStartSurvey();
+			downloadCSV(tables.trackerStartSurvey.data().get(), { filename: "trackerStartSurvey.csv" });
 		</script>
 	</body>
 </html>
