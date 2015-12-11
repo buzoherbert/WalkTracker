@@ -37,13 +37,126 @@
 				project.deserializeJSON(response.rows[0][0]);
 				return project;
 			}
+			function populateTableData(){
+				for (property in tables) {
+		            if (tables.hasOwnProperty(property)) {
+		            	var columns = getWhatToGet(tables[property].columns);
+						tables[property].data = getTableData(tables[property].id, columns);
+						if(property == "tracker"){
+							tables[property].trips = getTripData();
+						}
+		            }
+		        }
+			}
+			function getTableData(tableID, whatToGet){
+				var query = 'SELECT ' + whatToGet + ' FROM ' + tableID;
+				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
+				return parseTableData(httpGet(url));
+			}
+			function getFTcolumnlist(tableID){
+				var query = "https://www.googleapis.com/fusiontables/v2/tables/" + tableID + "/columns?key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
+				return parseColumnNames(httpGet(query));
+			}
+			function parseColumnNames(response){
+				var obj = JSON.parse(response);
+				var items = obj.items;
+				var columns = [];
+				for (var i = 0; i < items.length; i++) {
+					columns[i] = {};
+					columns[i].name = items[i].name;
+					columns[i].type = items[i].type;
+				};
+				return columns;
+			}			
+			function getWhatToGet(columns){
+			  	var whatToGet = "";
+			  	for (var i = 0; i < columns.length; i++){
+			  		whatToGet = whatToGet + columns[i].name + ", ";
+			  	}
+			  	whatToGet = whatToGet.substring(0, whatToGet.length - 2);
+			  	return whatToGet;
+		  	}			
+			function getTripData(){
+				var trips = tables.tracker.data().distinct("TripID");
+				var tripObj = {};
+				for (var i = 0; i < trips.length; i++) {
+					tripObj[trips[i]] = {};
+					var query = {};
+					query.TripID = trips[i];				
+					var trip = tables.tracker.data(query).order("timeStamp").get();
+					var points = [];
+					for (var j = 0; j < trip.length; j++) {
+						var point = [trip[j].Lat, trip[j].Lng];
+						points[j] = point;
+					};
+					tripObj[trips[i]].points = points;
+					tripObj[trips[i]].totalDistance = getTripDistance(points);
+				};
+				return tripObj;
+			}
+			function populateColumnNames(){
+				for (property in tables) {
+		            if (tables.hasOwnProperty(property)) {
+						tables[property].columns = getFTcolumnlist(tables[property].id);
+		            }
+		        }
+			}
+			function parseTableData(response){
+				var obj = JSON.parse(response);
+				var columns = obj.columns;
+				var db = TAFFY();
+				var rows = obj.rows;
+				for (var j = 0; j < rows.length; j++) {
+					var elem = {};
+					for (var i = 0; i < columns.length; i++) {
+						elem[columns[i]] = rows[j][i];
+						if(columns[i] == "Date"){
+							var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
+							elem.timeStamp = date;
+						}
+					};
+					db.insert(elem);
+				};
+				return db;
+			}
+			function replaceAll(find, replace, str) {
+			  return str.replace(new RegExp(find, 'g'), replace);
+			}
+			function getTripDistance(points){
+				var totalDistance = 0;
+				if(points.length > 1){
+					for (var i = 1; i < points.length; i++) {
+						totalDistance = totalDistance + getDistance(points[i][0], points[i][1], points[i-1][0], points[i-1][1]);
+					};
+				}
+				return totalDistance;
+			}
+			function getDistance(lat1, lng1, lat2, lng2){
+				var R = 6371; // km
+				var dLat = (lat2-lat1).toRad();
+				var dLng = (lng2-lng1).toRad();
+				var lat1 = lat1.toRad();
+				var lat2 = lat2.toRad();
 
-
-
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				        Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(lat1) * Math.cos(lat2); 
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+				var d = R * c;
+				return d;
+			};									
+			/** Converts numeric degrees to radians */
+			if (typeof(Number.prototype.toRad) === "undefined") {
+			  Number.prototype.toRad = function() {
+			    return this * Math.PI / 180;
+			  }
+			}
 
 			var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 			var project = getProject("walktracker");
 			var tables = initializeTables();
+			populateColumnNames();
+			populateTableData();
+
 		</script>
 	</body>
 </html>
