@@ -152,7 +152,7 @@
 			}
 			function fixTrackerStartSurvey(){
 				var trackerStartSurveys = tables.trackerStartSurvey.data().get();
-				
+				var fixedTotal = 0;
 				for (var i = 0; i < trackerStartSurveys.length; i++) {
 				 	if(trackerStartSurveys[i].TripID == "null"){
 				 		var matches = findPossibleTripIdMatches(trackerStartSurveys[i]);
@@ -163,9 +163,11 @@
 				 			var updateQuery = {};
 				 			updateQuery.TripID = matches[0];
 				 			tables.trackerStartSurvey.data(query).update(updateQuery);
+				 			fixedTotal++;
 						}
 				 	}
 				};
+				console.log("Fixed " + fixedTotal + " surveys");
 			}
 
 			function findPossibleTripIdMatches(tsSurvey){
@@ -184,7 +186,7 @@
 					var d = getDistance(survey.Lat, survey.Lng, tripsArray[i].Lat, tripsArray[i].Lng);
 					if (d < 0.050){
 						timeDifference = Math.abs(survey.timeStamp - tripsArray[i].timeStamp);
-						if(timeDifference < 90000){
+						if(timeDifference < 60000){
 							tripIdsClose.push(tripsArray[i].TripID);
 						}
 					}
@@ -240,8 +242,36 @@
 		        link.setAttribute('download', filename);
 		        link.click();
 		    }
-
-
+		    function eraseNonColumnData(table){
+		    	var data = tables[table].data().get();
+		    	console.log(tables[table].columns.length);
+		    	for (var i = 0; i < data.length; i++) {
+		    		for (var property in data[i]) {
+    					if (data[i].hasOwnProperty(property)) {
+    						var isInColumnlist = false;
+        					for (var j = 0; j < tables[table].columns.length; j++) {
+		    	 				if(tables[table].columns[j].name == property){
+		    	 					isInColumnlist = true;
+		    	 				}
+		    				};
+		    				if(!isInColumnlist){
+		    					delete data[i][property];
+		    				}
+    					}
+					}
+		    	};
+		    	return data;
+		    }
+		    function changeLocationToKML(data){
+		    	this.data = data;
+		    	for (var i = 0; i < data.length; i++) {
+					if(data[i].hasOwnProperty("Location")){
+		    			var newLocation = '"<Point><coordinates>' + data[i].Location.geometry.coordinates.toString() + '</coordinates></Point>"';
+		    			data[i].Location = newLocation;
+		    		}
+		    	};
+		    	return data;
+		    }
 
 
 
@@ -254,6 +284,10 @@
 			populateColumnNames();
 			populateTableData();
 			fixTrackerStartSurvey();
+			var data = eraseNonColumnData("trackerStartSurvey");
+			console.log(data);
+			data = changeLocationToKML(data);
+			console.log(data);
 			downloadCSV(tables.trackerStartSurvey.data().get(), { filename: "trackerStartSurvey.csv" });
 		</script>
 	</body>
