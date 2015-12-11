@@ -150,13 +150,45 @@
 			    return this * Math.PI / 180;
 			  }
 			}
+			function fixTrackerStartSurvey(){
+				var trackerStartSurveys = tables.trackerStartSurvey.data().get();
+				
+				for (var i = 0; i < trackerStartSurveys.length; i++) {
+				 	if(trackerStartSurveys[i].TripID == "null"){
+				 		findPossibleTripIdMatches(trackerStartSurveys[i]);
+				 	}
+				};
+			}
+
+			function findPossibleTripIdMatches(tsSurvey){
+				var query = {};
+				query.Username = tsSurvey.Username;
+				var trips = tables.tracker.data(query).order("timeStamp").get();
+				var tripsClose = findTripsCloseTo(tsSurvey, trips);
+
+
+			}
+
+			function findTripsCloseTo(survey, tripsArray){
+				var tripIdsClose = [];
+				//Checking distance closeness, 100 m to be safe.
+				for (var i = 0; i < tripsArray.length; i++) {
+					var d = getDistance(survey.Lat, survey.Lng, tripsArray[i].Lat, tripsArray[i].Lng);
+					if (d < 0.100){
+						tripIdsClose.push(tripsArray[i].TripID);
+					}
+				};
+				console.log(tripIdsClose);
+			}
+
+
 
 			var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 			var project = getProject("walktracker");
 			var tables = initializeTables();
 			populateColumnNames();
 			populateTableData();
-
+			fixTrackerStartSurvey();
 		</script>
 	</body>
 </html>
