@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+	<meta charset="utf-8">
+	<head>
+	</head>
+	<body>
+		<!-- Taffy DB -->
+		<script type="text/javascript" src="src/js/taffy-min.js"></script>
+		<!-- Flocktracker -->
+		<script type="text/javascript" src="src/js/FlockSON_min.js"></script>
+		<script type="text/javascript" src="src/js/FT_pr_mod_min.js"></script>
+		<script>
+			function httpGet(theUrl){
+			    var xmlHttp = new XMLHttpRequest();
+			    xmlHttp.open( "GET", theUrl, false );
+			    xmlHttp.send( null );
+			    return xmlHttp.responseText;
+			}
+			function initializeTables(){
+				var tables = {};
+				tables.trackerEndSurvey = {};
+				tables.trackerEndSurvey.id = project.getTrackerProject().getEndSurvey().getTableID();
+				tables.trackerStartSurvey = {};
+				tables.trackerStartSurvey.id = project.getTrackerProject().getStartSurvey().getTableID();
+				tables.tracker = {};
+				tables.tracker.id = project.getTrackerProject().getTracker().getTableID();
+				tables.survey = {};
+				tables.survey.id = project.getSurveyProject().getTableID();
+				return tables;
+			}		
+			function getProject(projectName){
+				var query = 'SELECT survey_json FROM ' + projectsTableID + " WHERE table_id='" + projectName + "'";
+				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=" + encodeURIComponent(query) + "&key=AIzaSyCyOfjR4LVvpwhsb4UfAT0AINBB19cbfUc";
+				var response = JSON.parse(httpGet(url));
+				var projectLB = new FT_pr()
+				var project = new projectLB.project();
+				project.deserializeJSON(response.rows[0][0]);
+				return project;
+			}
+
+
+
+
+			var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
+			var project = getProject("walktracker");
+			var tables = initializeTables();
+		</script>
+	</body>
+</html>
