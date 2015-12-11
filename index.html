@@ -145,7 +145,6 @@
 		}
 		function fillUsersSelector(){
 			var usersInSE = tables.trackerEndSurvey.data().order("Username asec").distinct("Username");
-			console.log(usersInSE);
 			var selector = document.getElementById("userSelector");
 			for (var j = 0; j < usersInSE.length; j++) {
 			 	var option = document.createElement("option");
@@ -499,10 +498,20 @@
 				query.TripID = trips[i];				
 				var trip = tables.tracker.data(query).order("timeStamp").get();
 				var points = [];
+				var tsSurvey = tables.trackerStartSurvey.data(query).get();
+				if(tsSurvey.length > 0){
+					var tsPoint = [tsSurvey[0].Lat, tsSurvey[0].Lng];
+					points.push(tsPoint);
+				}
 				for (var j = 0; j < trip.length; j++) {
 					var point = [trip[j].Lat, trip[j].Lng];
-					points[j] = point;
+					points.push(point);
 				};
+				var teSurvey = tables.trackerEndSurvey.data(query).get();
+				if(teSurvey.length > 0){
+					var tePoint = [teSurvey[0].Lat, teSurvey[0].Lng];
+					points.push(tePoint);
+				}
 				tripObj[trips[i]].points = points;
 				tripObj[trips[i]].totalDistance = getTripDistance(points);
 			};
@@ -525,7 +534,6 @@
 	        }
 		}
 		function drawTrip(trip){
-			console.log(trip);
 			if(tables.tracker.trips[trip].totalDistance < 0.01){
 				tables.tracker.trips[trip].line = L.polyline(tables.tracker.trips[trip].points, onePointTripStyle);
 			} else {
@@ -632,7 +640,7 @@
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga');
-		var tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
+		var tripLayer = new L.mapbox.featureLayer().addTo(map);
 		var project = getProject("walktracker");
 		var tables = initializeTables();
 		fillQuestionSelector();
