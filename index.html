@@ -500,20 +500,30 @@
 				var points = [];
 				var tsSurvey = tables.trackerStartSurvey.data(query).get();
 				if(tsSurvey.length > 0){
-					var tsPoint = [tsSurvey[0].Lat, tsSurvey[0].Lng];
-					points.push(tsPoint);
+					if((isFinite(Number(String(tsSurvey[0].Lat))))&&(isFinite(Number(String(tsSurvey[0].Lng))))){
+						var tsPoint = [tsSurvey[0].Lat, tsSurvey[0].Lng];
+						points.push(tsPoint);
+					}
 				}
 				for (var j = 0; j < trip.length; j++) {
-					var point = [trip[j].Lat, trip[j].Lng];
-					points.push(point);
+					if((isFinite(Number(String(trip[j].Lat))))&&(isFinite(Number(String(trip[j].Lng))))){
+						var point = [trip[j].Lat, trip[j].Lng];
+						points.push(point);
+					}
 				};
 				var teSurvey = tables.trackerEndSurvey.data(query).get();
 				if(teSurvey.length > 0){
-					var tePoint = [teSurvey[0].Lat, teSurvey[0].Lng];
-					points.push(tePoint);
+					if((isFinite(Number(String(teSurvey[0].Lat))))&&(isFinite(Number(String(teSurvey[0].Lng))))){
+						var tePoint = [teSurvey[0].Lat, teSurvey[0].Lng];
+						points.push(tePoint);
+					}
 				}
 				tripObj[trips[i]].points = points;
 				tripObj[trips[i]].totalDistance = getTripDistance(points);
+				if(tripObj[trips[i]].totalDistance > 1){
+					console.log(trips[i]);
+				console.log(tripObj[trips[i]].totalDistance);
+				}
 			};
 			return tripObj;
 		}
@@ -529,7 +539,9 @@
 		function drawTrips(trips){
 			for (property in trips) {
 	            if (trips.hasOwnProperty(property)) {
-					drawTrip(property);
+	            	if(property != "null"){
+						drawTrip(property);
+					}
 	            }
 	        }
 		}
@@ -553,28 +565,29 @@
 		  return str.replace(new RegExp(find, 'g'), replace);
 		}
 
-		function getDistance(lat1, lng1, lat2, lng2){
-			var R = 6371; // km
-			var dLat = (lat2-lat1).toRad();
-			var dLng = (lng2-lng1).toRad();
-			var lat1 = lat1.toRad();
-			var lat2 = lat2.toRad();
-
-			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-			        Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(lat1) * Math.cos(lat2); 
-			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-			var d = R * c;
-			return d;
-		};
-
-
-
 		/** Converts numeric degrees to radians */
 		if (typeof(Number.prototype.toRad) === "undefined") {
 		  Number.prototype.toRad = function() {
 		    return this * Math.PI / 180;
 		  }
 		}
+
+		function getDistance(lat1, lng1, lat2, lng2){
+			var d = 0;
+			if(((isFinite(Number(String(lat1))))&&(isFinite(Number(String(lng1)))))&&((isFinite(Number(String(lat2))))&&(isFinite(Number(String(lng2)))))){
+				var R = 6371; // km
+				var dLat = (lat2-lat1).toRad();
+				var dLng = (lng2-lng1).toRad();
+				var lat1 = lat1.toRad();
+				var lat2 = lat2.toRad();
+
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				        Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(lat1) * Math.cos(lat2); 
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+				d = R * c;
+			}
+			return d;
+		};
 
 		function getTripsByUser(user){
 			var userTrips = tables.tracker.data({"Username":user}).distinct("TripID");
@@ -648,7 +661,14 @@
 		populateTableData();
 		fillUsersSelector();
 		drawTrips(tables.tracker.trips);
-		map.fitBounds(tripLayer.getBounds());
+		//map.fitBounds(tripLayer.getBounds());
+		 map.fitBounds([[
+        		1.330277595775582,
+        		103.72748136520386
+    	], [
+        	1.3445859640103923,
+        	103.7567925453186
+    	]]);
 		</script>
 	</body>
 </html>
