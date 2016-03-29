@@ -458,7 +458,8 @@
 				for (var i = 0; i < columns.length; i++) {
 					elem[columns[i]] = rows[j][i];
 					if(columns[i] == "Date"){
-						var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
+						//var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
+						var date = rows[j][i];
 						elem.timeStamp = date;
 					}
 				};
@@ -469,11 +470,11 @@
 		function initializeTables(){
 			var tables = {};
 			tables.trackerEndSurvey = {};
-			tables.trackerEndSurvey.id = "1Kdu9jSFr3QsBkzs_t7tpm3kT2mt4erkkSmWv5wkw"// project.getTrackerProject().getEndSurvey().getTableID();
+			tables.trackerEndSurvey.id = "1v0cqJR0_t5Q7ONKSHMnlwovMLRZ-HaexJCWhZZ5w"// project.getTrackerProject().getEndSurvey().getTableID();
 			tables.trackerStartSurvey = {};
-			tables.trackerStartSurvey.id = "1Kdu9jSFr3QsBkzs_t7tpm3kT2mt4erkkSmWv5wkw"//project.getTrackerProject().getStartSurvey().getTableID();
+			tables.trackerStartSurvey.id = "1KLJBgh0aBg9AIEMxBMSDCDXAS0y4brPSEfhvs5Tj"//project.getTrackerProject().getStartSurvey().getTableID();
 			tables.tracker = {};
-			tables.tracker.id = "1Kdu9jSFr3QsBkzs_t7tpm3kT2mt4erkkSmWv5wkw"//project.getTrackerProject().getTracker().getTableID();
+			tables.tracker.id = "1iIRhahFFa2G9o3EjunNamHuVMNeI1Wb5ZWFb6jdI"//project.getTrackerProject().getTracker().getTableID();
 			tables.survey = {};
 			tables.survey.id = project.getSurveyProject().getTableID();
 			return tables;
