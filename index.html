@@ -233,12 +233,12 @@
 			div.appendChild(line);
 			div.appendChild(document.createElement("br"));
 			var elemToDelete = mainInfo.concat(removeInfo);
-
+			// Drawing tracker Start data
 			var dataToShowStart = deleteKeysFromObject(trackerStartTripData, elemToDelete);
 			var startSurv = project.getTrackerProject().getStartSurvey().getSurvey();
 			addSurveyDataToContainer(dataToShowStart, startSurv, div);
 
-
+			// Drawing tracker End data
 			var dataToShowEnd = deleteKeysFromObject(trackerEndTripData, elemToDelete);
 			var endSurv = project.getTrackerProject().getEndSurvey().getSurvey();
 			addSurveyDataToContainer(dataToShowEnd, endSurv, div);
@@ -248,8 +248,6 @@
 			var dataList = dataList;
 			var container = container;
 			var survey = survey;
-			console.log("dataList");
-			console.log(dataList);
 			for (data in dataList) {
 	            if (dataList.hasOwnProperty(data)) {
 	            	var q = survey.getQuestionById(data);
@@ -571,6 +569,8 @@
 			})
 		}
 		function onTripClick(tripID){
+			console.log(tables.tracker.trips[tripID].line);
+			tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 			map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
 			showTripData(tripID);
 		}
@@ -643,11 +643,14 @@
 			"#3CE4FC",
 			"#18A800"
 		];
-
+		var selectedStyle = {
+			weight : 12,
+			opacity : 1
+		}
 		var defaultLineStyle  = {
 			color: '#000',
-			weight : 8,
-			opacity : 0.8,
+			weight : 6,
+			opacity : 0.6,
 			lineCap: "butt",
 			lineJoin: "round",
 			dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
