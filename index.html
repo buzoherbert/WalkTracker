@@ -197,17 +197,17 @@
 		}
 
 		function showTripData(tripID){
-			query = {};
+			var query = {};
 			query.TripID = tripID;				
-			var tripData = tables.trackerEndSurvey.data(query).get()[0];
-			console.log(JSON.stringify(tripData));
+			var trackerEndTripData = tables.trackerEndSurvey.data(query).get()[0];
+			var trackerStartTripData = tables.tracker.data(query).get()[0];
 			var div = document.getElementById("infoBox");
 			div.innerHTML = "<h3>" + tripID + "</h3>";	
 			for (var i = 0; i < mainInfo.length; i++) {
 				var name = document.createElement("b");
 				name.innerHTML = mainInfo[i] + " : ";
 				var value = document.createElement("span");
-				value.innerHTML = tripData[mainInfo[i]];
+				value.innerHTML = trackerEndTripData[mainInfo[i]];
 				var line = document.createElement("span");
 				line.appendChild(name);
 				line.appendChild(value);
@@ -223,7 +223,6 @@
 			line.appendChild(value);
 			div.appendChild(line);
 			div.appendChild(document.createElement("br")); 
-
 			var name = document.createElement("b");
 			name.innerHTML = "Number of points" + " : ";
 			var value = document.createElement("span");
@@ -234,45 +233,59 @@
 			div.appendChild(line);
 			div.appendChild(document.createElement("br"));
 			var elemToDelete = mainInfo.concat(removeInfo);
-			var otherData = deleteKeysFromObject(tripData, elemToDelete);
-			var surv = project.getTrackerProject().getEndSurvey().getSurvey();
-			for (data in otherData) {
-	            if (otherData.hasOwnProperty(data)) {
-	            	var q = surv.getQuestionById(data);
+
+			var dataToShowStart = deleteKeysFromObject(trackerStartTripData, elemToDelete);
+			var startSurv = project.getTrackerProject().getStartSurvey().getSurvey();
+			addSurveyDataToContainer(dataToShowStart, startSurv, div);
+
+
+			var dataToShowEnd = deleteKeysFromObject(trackerEndTripData, elemToDelete);
+			var endSurv = project.getTrackerProject().getEndSurvey().getSurvey();
+			addSurveyDataToContainer(dataToShowEnd, endSurv, div);
+		}
+
+		function addSurveyDataToContainer(dataList, survey, container){
+			var dataList = dataList;
+			var container = container;
+			var survey = survey;
+			console.log("dataList");
+			console.log(dataList);
+			for (data in dataList) {
+	            if (dataList.hasOwnProperty(data)) {
+	            	var q = survey.getQuestionById(data);
 	            	var isPicture = false;
 	            	if(q != null){
 	            		if(q.getKind() == "IM"){
 	            			isPicture = true;
 	            		}
+		            	var line = document.createElement("span");
+		            	var name = document.createElement("b");
+						name.innerHTML = data + " : ";
+						var content = null;
+		            	if(isPicture){
+		            		image = document.createElement("img");
+							image.src = dataList[data];
+							image.className = "tripInfoThumbnail";
+							content = document.createElement("div");
+							content.appendChild(image);
+							content.className = "tripInfoThumbnailContainer";
+							line.appendChild(name);
+							line.appendChild(document.createElement("br"))
+							line.appendChild(content);
+		            	} else {
+							content = document.createElement("span");
+							var answer = getAnswerByValue(survey, data, dataList[data]);
+							if (answer != null){
+								content.innerHTML = answer.getAnswerText();
+							} else {
+								content.innerHTML = dataList[data];
+							}
+							line.appendChild(name);
+							line.appendChild(content);
+		            	}
+						container.appendChild(line);
+						container.appendChild(document.createElement("br")); 
 	            	}
-	            	var line = document.createElement("span");
-	            	var name = document.createElement("b");
-					name.innerHTML = data + " : ";
-					var content = null;
-	            	if(isPicture){
-	            		image = document.createElement("img");
-						image.src = otherData[data];
-						image.className = "tripInfoThumbnail";
-						content = document.createElement("div");
-						content.appendChild(image);
-						content.className = "tripInfoThumbnailContainer";
-						line.appendChild(name);
-						line.appendChild(document.createElement("br"))
-						line.appendChild(content);
-	            	} else {
-						content = document.createElement("span");
-						var surv = project.getTrackerProject().getEndSurvey().getSurvey();
-						var answer = getAnswerByValue(surv, data, otherData[data]);
-						if (answer != null){
-							content.innerHTML = answer.getAnswerText();
-						} else {
-							content.innerHTML = otherData[data];
-						}
-						line.appendChild(name);
-						line.appendChild(content);
-	            	}
-					div.appendChild(line);
-					div.appendChild(document.createElement("br")); 
 	            }
 	        }
 		}
@@ -458,8 +471,7 @@
 				for (var i = 0; i < columns.length; i++) {
 					elem[columns[i]] = rows[j][i];
 					if(columns[i] == "Date"){
-						//var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
-						var date = rows[j][i];
+						var date = Date.parse(replaceAll("-", "/", rows[j][i])).toString();
 						elem.timeStamp = date;
 					}
 				};
@@ -649,7 +661,7 @@
 			dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
 		}
 		var customStyles = {};
-		var mainInfo = ["Username", "TripID"];
+		var mainInfo = ["Username", "TripID", "Date"];
 		var removeInfo = ["Location", "Lat", "Lng", "Alt", "Speed", "___id", "___s", "timeStamp"];
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
