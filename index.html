@@ -169,20 +169,23 @@
 				}
 			}
 		}
-/*
-		function redrawTrips(){
+
+/*		function redrawTrips(){
 			map.removeLayer(tripLayer);
 			tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
 			var userSelector = document.getElementById("userSelector");
 			var trips;
+			//Getting all the trips to be shown based on selected users;
 			if(userSelector.selectedIndex != 0){
 				var selectedUser = userSelector.options[userSelector.selectedIndex].value;
 				trips = getTripsByUser(selectedUser);
 			} else{
 				trips = tables.tracker.trips;
 			}
+			//Drawing trips
 			drawTrips(trips);
 			map.fitBounds(tripLayer.getBounds());
+			//Styling depending on 
 			var questionSelector = document.getElementById("questionFilterSelector");
 			if(questionSelector.selectedIndex != 0){
 				var div = document.getElementById("tripKey");
@@ -366,7 +369,7 @@
 				var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
 				for (trip in tables.tracker.trips) {
 	            	if (tables.tracker.trips.hasOwnProperty(trip)) {
-	            		if(tripsInSE.indexOf(trip) > 1){
+	            		if(tripsInSE.indexOf(trip) > 0){
 	            			query = {};
 							query.TripID = trip;				
 							var tripData = tables.trackerEndSurvey.data(query).get()[0];
@@ -539,7 +542,6 @@
 			trips = trips.concat(tripsEnd);
 			//Filtering out repeated items.
 			trips = trips.filter(function (item, pos) {return trips.indexOf(item) == pos});
-
 			var tripObj = {};
 			for (var i = 0; i < trips.length; i++) {
 				tripObj[trips[i]] = {};
@@ -607,7 +609,6 @@
 			})
 		}
 		function onTripClick(tripID){
-			console.log(tables.tracker.trips[tripID].line);
 			tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 			map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
 			showTripData(tripID);
