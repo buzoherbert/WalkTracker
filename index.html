@@ -126,7 +126,9 @@
 			 	var questions = chapters[i].getQuestions();
 			 	for (var j = 0; j < questions.length; j++) {
 			 		var option = document.createElement("option");
-			 		if(questions[j].getKind() != "IM"){
+			 		if(((questions[j].getKind() != "IM")
+			 			&& (questions[j].getKind() != "ON"))
+			 			&& (questions[j].getKind() != "OT")){
 			 			option.value = questions[j].getQuestionID();
 				 		option.innerHTML = questions[j].getQuestionID();
 				 		selector.add(option);
