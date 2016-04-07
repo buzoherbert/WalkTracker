@@ -143,6 +143,7 @@
 				}
 			}
 		}
+
 		function fillUsersSelector(){
 			var usersInSE = tables.trackerEndSurvey.data().order("Username asec").distinct("Username");
 			var selector = document.getElementById("userSelector");
@@ -163,12 +164,41 @@
 					tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
 					var selectedUser = this.options[this.selectedIndex].value;
 					var userTrips = getTripsByUser(selectedUser);
-					console.log(userTrips);
 					drawTrips(userTrips);
 					map.fitBounds(tripLayer.getBounds());
 				}
 			}
 		}
+/*
+		function redrawTrips(){
+			map.removeLayer(tripLayer);
+			tripLayer = new L.mapbox.featureLayer("tripLayer").addTo(map);
+			var userSelector = document.getElementById("userSelector");
+			var trips;
+			if(userSelector.selectedIndex != 0){
+				var selectedUser = userSelector.options[userSelector.selectedIndex].value;
+				trips = getTripsByUser(selectedUser);
+			} else{
+				trips = tables.tracker.trips;
+			}
+			drawTrips(trips);
+			map.fitBounds(tripLayer.getBounds());
+			var questionSelector = document.getElementById("questionFilterSelector");
+			if(questionSelector.selectedIndex != 0){
+				var div = document.getElementById("tripKey");
+					div.innerHTML = "";
+			} else{
+				var selected = questionSelector.options[questionSelector.selectedIndex].value;
+					colorCodeTrips(selected);
+			}			
+
+
+
+
+
+
+
+		}*/
 
 		function colorCodeTrips(selected){
 				var options = getPossibleOptions(selected);
@@ -501,7 +531,15 @@
 			return columns;
 		}
 		function getTripData(){
+			//TODO fix this to make it work with two point lines.
 			var trips = tables.tracker.data().distinct("TripID");
+			var tripsStart = tables.trackerEndSurvey.data().distinct("TripID");
+			var tripsEnd = tables.trackerStartSurvey.data().distinct("TripID");
+			trips = trips.concat(tripsStart);
+			trips = trips.concat(tripsEnd);
+			//Filtering out repeated items.
+			trips = trips.filter(function (item, pos) {return trips.indexOf(item) == pos});
+
 			var tripObj = {};
 			for (var i = 0; i < trips.length; i++) {
 				tripObj[trips[i]] = {};
