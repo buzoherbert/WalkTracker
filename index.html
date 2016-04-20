@@ -101,12 +101,17 @@
 	<body>
 		<div id='map'></div>
 		<div id="layerOptions">
-			<select id="questionFilterSelector">
-  				<option value="none">Choose a question!</option>
-			</select>
-			<select id="userSelector">
-  				<option value="none">Filer by user</option>
-			</select>
+			<div>
+				<select id="questionFilterSelector">
+	  				<option value="none">Choose a question!</option>
+				</select>
+				<select id="userSelector">
+	  				<option value="none">Filer by user</option>
+				</select>
+			</div>
+			<div>
+				<input type="checkbox" name="survey_checkbox" id="survey_checkbox" value="Bike">Show surveys<br>
+			</div>			
 		</div>
 		<div id="tripKey"></div>		
 		<div id="infoBox"></div>
@@ -473,6 +478,9 @@
 					if(property == "tracker"){
 						tables[property].trips = getTripData();
 					}
+					if(property == "survey"){
+						tables[property].surveys = getSurveyData();
+					}
 	            }
 	        }
 		}
@@ -535,6 +543,24 @@
 			};
 			return columns;
 		}
+		function getSurveyData(){
+			var surveyObj = {};
+			var surveys = tables.survey.data().distinct("SurveyID");
+			for (var i = 0; i < surveys.length; i++) {
+				surveyObj[surveys[i]] = {};
+				var query = {};
+				query.SurveyID = surveys[i];				
+				var survey = tables.survey.data(query).order("timeStamp").get();
+				var point = [];
+				if(survey.length > 0){
+					if((isFinite(Number(String(survey[0].Lat))))&&(isFinite(Number(String(survey[0].Lng))))){
+						point = [survey[0].Lat, survey[0].Lng];
+					}
+				}
+				surveyObj[surveys[i]].point = point;
+			}
+			return surveyObj;
+		}
 		function getTripData(){
 			//TODO fix this to make it work with two point lines.
 			var trips = tables.tracker.data().distinct("TripID");
@@ -573,10 +599,6 @@
 				}
 				tripObj[trips[i]].points = points;
 				tripObj[trips[i]].totalDistance = getTripDistance(points);
-				if(tripObj[trips[i]].totalDistance > 1){
-					console.log(trips[i]);
-				console.log(tripObj[trips[i]].totalDistance);
-				}
 			};
 			return tripObj;
 		}
@@ -589,6 +611,49 @@
 			}
 			return totalDistance;
 		}
+		function drawSurveys(surveys){
+			console.log(surveys);
+			for(var i = 1; i < surveys.length; i++){
+				drawSurvey(surveys[i]);
+			}
+		}
+		function drawSurvey(survey){
+			var surveyMarker = new marker(survey);
+			surveyMarker.addToMapLayer(surveyLayer);
+		}
+		var marker = function(survey){
+			this.survey = survey;
+			this.addToMapLayer = function(layer){
+				var coord = tables.survey.surveys[this.survey].point;
+				//console.log(this.survey + " " + coord);
+				var mark = L.marker(coord, {icon: FT_Icon}).addTo(layer);
+				//mark.bindPopup(this.addSurveyContentToPopUp())
+			}
+/*			this.addSurveyContentToPopUp=function(){
+				var content='<h1>Survey Information<\/h1>'+
+							'<ul>'+
+							'<li>Survey ID :'+this.survey.breadcrumb.surveyID+' <\/li>'+
+							'<li>User :'+this.survey.breadcrumb.metadata.userID+' <\/li>'+
+							'<li>Date :'+this.survey.breadcrumb.metadata.date+' <\/li>'+
+							'<li>Location :'+this.survey.breadcrumb.metadata.location+' <\/li>'+
+							'<li>Speed :'+this.survey.breadcrumb.metadata.speed+' <\/li>'+
+							'<li>Questions :<ul>'+this.makeQuestionsContent()+
+								
+								'<\/ul><\/li>'+
+							'<\/ul>';
+							return content;
+
+			}
+			this.makeQuestionsContent=function(){
+				var content='<li>';
+				for (var i=0;i<this.survey.questions.length;i++){
+					content=content+'<b> '+this.survey.questions[i].questionID+':<\/b> '+this.survey.questions[i].answer+': <\/li>';
+				}
+				console.log(content)
+				return content;
+			}*/
+		}
+
 		function drawTrips(trips){
 			for (property in trips) {
 	            if (trips.hasOwnProperty(property)) {
@@ -703,6 +768,12 @@
 			lineJoin: "round",
 			dashArray : "20 1 20 1 2 1 20 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 2 1 20 1 2 1 2 1 2 1 20 1 2 1 2 1 20 1 2 1"
 		}
+		var url = window.location.href;
+		url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft.png';
+		var FT_Icon = L.icon({
+			iconUrl: url,
+			iconSize: [25, 30],
+		});
 		var customStyles = {};
 		var mainInfo = ["Username", "TripID", "Date"];
 		var removeInfo = ["Location", "Lat", "Lng", "Alt", "Speed", "___id", "___s", "timeStamp"];
@@ -710,6 +781,7 @@
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
 		var map = new L.mapbox.map('map', 'buzoherbert.mn20inga');
 		var tripLayer = new L.mapbox.featureLayer().addTo(map);
+		var surveyLayer = new L.mapbox.featureLayer().addTo(map);
 		var project = getProject("walktracker");
 		var tables = initializeTables();
 		fillQuestionSelector();
@@ -725,6 +797,18 @@
         	1.3445859640103923,
         	103.7567925453186
     	]]);
+		var surveysCheckbox = document.getElementById("survey_checkbox");
+		surveysCheckbox.onchange = function(){
+			if(this.checked){
+				drawSurveys(tables.survey.data().distinct("SurveyID"));
+			} else {
+				clearSurveys();
+			}
+		}
+		function clearSurveys(){
+			map.removeLayer(surveyLayer);
+		}
+
 		</script>
 	</body>
 </html>
