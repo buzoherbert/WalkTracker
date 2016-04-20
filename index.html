@@ -800,6 +800,8 @@
 		var surveysCheckbox = document.getElementById("survey_checkbox");
 		surveysCheckbox.onchange = function(){
 			if(this.checked){
+				clearSurveys();
+				surveyLayer = new L.mapbox.featureLayer().addTo(map);
 				drawSurveys(tables.survey.data().distinct("SurveyID"));
 			} else {
 				clearSurveys();
