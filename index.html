@@ -612,10 +612,20 @@
 			return totalDistance;
 		}
 		function drawSurveys(surveys){
-			console.log(surveys);
-			for(var i = 1; i < surveys.length; i++){
-				drawSurvey(surveys[i]);
-			}
+			this.surveys = surveys;
+			var that = this;
+		    i = 0;
+		    var totalTimeMillis = 1000;
+		    var drawInterval = totalTimeMillis/surveys.length;
+		    console.log(drawInterval);
+		    var interval = setInterval(function() {
+		        if (i < surveys.length) {
+		        	drawSurvey(that.surveys[i]);
+		            i++;
+		        } else {
+		            clearInterval(interval);
+		        }
+		    }, drawInterval)
 		}
 		function drawSurvey(survey){
 			var surveyMarker = new marker(survey);
