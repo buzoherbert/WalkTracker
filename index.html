@@ -84,8 +84,8 @@
 			    -o-transition: all 0.7s ease-in-out;
 			}
 			.marker_info_container{
-				height:200px;
-				width: 200px;
+				height:500px;
+				width: 300px;
 				overflow-y: scroll;
 				overflow-x: hidden;
 			}
@@ -691,7 +691,7 @@
 			tables.tracker.trips[trip].line.bindPopup(trackerInfoContainer);
 		}
 		function onTripClick(tripID){
-			tables.tracker.trips[tripID].line.setStyle(selectedStyle);
+			//tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 			map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
 			//showTripData(tripID);
 		}
