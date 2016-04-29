@@ -85,6 +85,7 @@
 			}
 			.marker_info_container{
 				height:200px;
+				width: 200px;
 				overflow-y: scroll;
 				overflow-x: hidden;
 			}
@@ -239,54 +240,6 @@
 					div.appendChild(document.createElement("br"));
 				}
 			};
-		}
-
-		function showTripData(tripID){
-			var query = {};
-			query.TripID = tripID;				
-			var trackerEndTripData = tables.trackerEndSurvey.data(query).get()[0];
-			var trackerStartTripData = tables.tracker.data(query).get()[0];
-			var div = document.getElementById("infoBox");
-			div.innerHTML = "<h3>" + tripID + "</h3>";	
-			for (var i = 0; i < mainInfo.length; i++) {
-				var name = document.createElement("b");
-				name.innerHTML = mainInfo[i] + " : ";
-				var value = document.createElement("span");
-				value.innerHTML = trackerEndTripData[mainInfo[i]];
-				var line = document.createElement("span");
-				line.appendChild(name);
-				line.appendChild(value);
-				div.appendChild(line);
-				div.appendChild(document.createElement("br")); 
-			};
-			var name = document.createElement("b");
-			name.innerHTML = "Total distance" + " : ";
-			var value = document.createElement("span");
-			value.innerHTML = ((tables.tracker.trips[tripID].totalDistance * 1000).toFixed(2)) + " m";
-			var line = document.createElement("span");
-			line.appendChild(name);
-			line.appendChild(value);
-			div.appendChild(line);
-			div.appendChild(document.createElement("br")); 
-			var name = document.createElement("b");
-			name.innerHTML = "Number of points" + " : ";
-			var value = document.createElement("span");
-			value.innerHTML = tables.tracker.trips[tripID].points.length;
-			var line = document.createElement("span");
-			line.appendChild(name);
-			line.appendChild(value);
-			div.appendChild(line);
-			div.appendChild(document.createElement("br"));
-			var elemToDelete = mainInfo.concat(removeInfo);
-			// Drawing tracker Start data
-			var dataToShowStart = deleteKeysFromObject(trackerStartTripData, elemToDelete);
-			var startSurv = project.getTrackerProject().getStartSurvey().getSurvey();
-			addSurveyDataToContainer(dataToShowStart, startSurv, div);
-
-			// Drawing tracker End data
-			var dataToShowEnd = deleteKeysFromObject(trackerEndTripData, elemToDelete);
-			var endSurv = project.getTrackerProject().getEndSurvey().getSurvey();
-			addSurveyDataToContainer(dataToShowEnd, endSurv, div);
 		}
 
 		function addSurveyDataToContainer(dataList, survey, container){
@@ -646,9 +599,54 @@
 			}
 		}
 
-		getTrackerContentPopUp = function(trackerID){
+		getTrackerContentPopUp = function(tripID){
+			var query = {};
+			query.TripID = tripID;				
+			var trackerEndTripData = tables.trackerEndSurvey.data(query).get()[0];
+			var trackerStartTripData = tables.tracker.data(query).get()[0];
+			var div = document.createElement("div");
+			div.className = "marker_info_container"
+			div.innerHTML = "<h3>" + tripID + "</h3>";	
+			for (var i = 0; i < mainInfo.length; i++) {
+				var name = document.createElement("b");
+				name.innerHTML = mainInfo[i] + " : ";
+				var value = document.createElement("span");
+				value.innerHTML = trackerEndTripData[mainInfo[i]];
+				var line = document.createElement("span");
+				line.appendChild(name);
+				line.appendChild(value);
+				div.appendChild(line);
+				div.appendChild(document.createElement("br")); 
+			};
+			var name = document.createElement("b");
+			name.innerHTML = "Total distance" + " : ";
+			var value = document.createElement("span");
+			value.innerHTML = ((tables.tracker.trips[tripID].totalDistance * 1000).toFixed(2)) + " m";
+			var line = document.createElement("span");
+			line.appendChild(name);
+			line.appendChild(value);
+			div.appendChild(line);
+			div.appendChild(document.createElement("br")); 
+			var name = document.createElement("b");
+			name.innerHTML = "Number of points" + " : ";
+			var value = document.createElement("span");
+			value.innerHTML = tables.tracker.trips[tripID].points.length;
+			var line = document.createElement("span");
+			line.appendChild(name);
+			line.appendChild(value);
+			div.appendChild(line);
+			div.appendChild(document.createElement("br"));
+			var elemToDelete = mainInfo.concat(removeInfo);
+			// Drawing tracker Start data
+			var dataToShowStart = deleteKeysFromObject(trackerStartTripData, elemToDelete);
+			var startSurv = project.getTrackerProject().getStartSurvey().getSurvey();
+			addSurveyDataToContainer(dataToShowStart, startSurv, div);
 
-			
+			// Drawing tracker End data
+			var dataToShowEnd = deleteKeysFromObject(trackerEndTripData, elemToDelete);
+			var endSurv = project.getTrackerProject().getEndSurvey().getSurvey();
+			addSurveyDataToContainer(dataToShowEnd, endSurv, div);
+			return div;
 		}
 
 		getSurveyContentPopUp = function(surveyID){
@@ -680,14 +678,22 @@
 			tables.tracker.trips[trip].line.addTo(tripLayer);
 			tables.tracker.trips[trip].line.tripID = trip;
 			tables.tracker.trips[trip].line.on("click", function(){
+			var interval = setInterval(function() {
+				var trackerInfoContainer = document.getElementById(trip + "_info");
+				if(trackerInfoContainer != null) trackerInfoContainer.outerHTML = getTrackerContentPopUp(trip).outerHTML;
+		            clearInterval(interval);
+		    }, 300)
 				onTripClick(this.tripID);
 			})
-			tables.tracker.trips[trip].line.bindPopup(document.createElement("div"));
+			var trackerInfoContainer = document.createElement("div");
+			trackerInfoContainer.id = (trip + "_info");
+			trackerInfoContainer.className = "marker_info_container";
+			tables.tracker.trips[trip].line.bindPopup(trackerInfoContainer);
 		}
 		function onTripClick(tripID){
 			tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 			map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
-			showTripData(tripID);
+			//showTripData(tripID);
 		}
 		function replaceAll(find, replace, str) {
 		  return str.replace(new RegExp(find, 'g'), replace);
@@ -785,6 +791,7 @@
 		});
 		var customStyles = {};
 		var mainInfo = ["Username", "TripID", "Date"];
+		var surveyMainInfo = ["Username", "SurveyID", "Date"];
 		var removeInfo = ["Location", "Lat", "Lng", "Alt", "Speed", "___id", "___s", "timeStamp"];
 	  	var projectsTableID = "1ozk50GfhDEchXBiPwnmMZ1pTdEtGJmmJPq3zK704";
 		L.mapbox.accessToken = 'pk.eyJ1IjoiYnV6b2hlcmJlcnQiLCJhIjoibXJXclpEVSJ9.YxiPmO7Q5QZrOGCuOsAYQg';
