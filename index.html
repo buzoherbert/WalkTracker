@@ -83,6 +83,11 @@
 			    -webkit-transition: all 0.7s ease-in-out;
 			    -o-transition: all 0.7s ease-in-out;
 			}
+			.marker_info_container{
+				height:200px;
+				overflow-y: scroll;
+				overflow-x: hidden;
+			}
 			.tripInfoThumbnailContainer {
 				height:400px;
 				width:100%;
@@ -636,43 +641,25 @@
 			that = this;
 			this.addToMapLayer = function(layer){
 				var coord = tables.survey.surveys[this.surveyID].point;
-				//console.log(this.survey + " " + coord);
 				var mark = L.marker(coord, {icon: FT_Icon}).addTo(layer);
-				mark.bindPopup(this.addSurveyContentToPopUp())
+				mark.bindPopup(getSurveyContentPopUp(that.surveyID))
 			}
-			this.addSurveyContentToPopUp=function(){
+		}
 
-/*				var content='<h1>Survey Information<\/h1>'+
-							'<ul>'+
-							'Survey ID :'+ this.survey +
-							'<li>Survey ID :'+this.survey.breadcrumb.surveyID+' <\/li>'+
-							'<li>User :'+this.survey.breadcrumb.metadata.userID+' <\/li>'+
-							'<li>Date :'+this.survey.breadcrumb.metadata.date+' <\/li>'+
-							'<li>Location :'+this.survey.breadcrumb.metadata.location+' <\/li>'+
-							'<li>Speed :'+this.survey.breadcrumb.metadata.speed+' <\/li>'+
-							'<li>Questions :<ul>'+this.makeQuestionsContent()+
-							
-								
-								'<\/ul><\/li>'+
-							'<\/ul>';*/
-				var content = document.createElement("div");
+		getTrackerContentPopUp = function(trackerID){
+
+			
+		}
+
+		getSurveyContentPopUp = function(surveyID){
+			var content = document.createElement("div");
 				var query = {};
-				query.SurveyID = that.surveyID;
+				query.SurveyID = surveyID;
 				var surveyData = tables.survey.data(query).get()[0];
 				var survey = project.getSurveyProject().getSurvey();
 				addSurveyDataToContainer(surveyData, survey, content);
-				console.log(query);
+				content.className = "marker_info_container"
 				return content.outerHTML;
-
-			}
-			// this.makeQuestionsContent=function(){
-			// 	var content='<li>';
-			// 	for (var i=0;i<this.survey.questions.length;i++){
-			// 		content=content+'<b> '+this.survey.questions[i].questionID+':<\/b> '+this.survey.questions[i].answer+': <\/li>';
-			// 	}
-			// 	console.log(content)
-			// 	return content;
-			// }
 		}
 
 		function drawTrips(trips){
@@ -695,6 +682,7 @@
 			tables.tracker.trips[trip].line.on("click", function(){
 				onTripClick(this.tripID);
 			})
+			tables.tracker.trips[trip].line.bindPopup(document.createElement("div"));
 		}
 		function onTripClick(tripID){
 			tables.tracker.trips[tripID].line.setStyle(selectedStyle);
