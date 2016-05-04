@@ -302,16 +302,20 @@ function styleSurveys(variable, options, colors){
 						query = {};
 						query.SurveyID = survey;				
 						var surveyData = tables.survey.data(query).get()[0];
-						var answerIndex = getAnswerIndex(surveyData[variable], options);
-						var colorHash = colors[answerIndex];
-						var colorNoHash = colorHash.replace("#", "");
-						var url = window.location.href;
-						url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft_' + colorNoHash + '.png';
-						var new_icon = L.icon({
-							iconUrl: url,
-							iconSize: [25, 30],
-						});
-						tables.survey.surveys[survey].marker.changeIcon(new_icon);
+						try{
+							var answerIndex = getAnswerIndex(surveyData[variable], options);
+							var colorHash = colors[answerIndex];
+							var colorNoHash = colorHash.replace("#", "");
+							var url = window.location.href;
+							url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft_' + colorNoHash + '.png';
+							var new_icon = L.icon({
+								iconUrl: url,
+								iconSize: [25, 30],
+							});
+							tables.survey.surveys[survey].marker.changeIcon(new_icon);
+						} catch(error) {
+							tables.survey.surveys[survey].marker.changeIcon(FT_Icon);
+						}
 					} else {
 						tables.survey.surveys[survey].marker.changeIcon(FT_Icon);
 					}
@@ -456,7 +460,7 @@ function initializeTables(){
 	tables.tracker = {};
 	tables.tracker.id = "1iIRhahFFa2G9o3EjunNamHuVMNeI1Wb5ZWFb6jdI"//project.getTrackerProject().getTracker().getTableID();
 	tables.survey = {};
-	tables.survey.id = "1OGGiHV6dOwaVSPsi4prad8gFeX4w0UA8apCPY3kP" //project.getSurveyProject().getTableID();
+	tables.survey.id = "15TO6ipqB7MYZLfGCmyUxQdD5dJKGhzEijHgOk9zY" //project.getSurveyProject().getTableID();
 	return tables;
 }
 function parseColumnNames(response){
