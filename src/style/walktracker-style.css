@@ -9,6 +9,7 @@ body {
 	padding:0;
 	width:100%;
 	height: 100%;
+	overflow: hidden;
 }
 #map {position:absolute;
 	top:0;
@@ -57,7 +58,7 @@ body {
 
 #infoPanel:hover {
 	overflow-y:scroll;
-	background:rgba(25,59,104,1);
+	background:rgba(255,255,255,1);
 	color: white;
 }
 #infoPanel h3,#infoPanel span, #tripKey h3, #tripKey span {
