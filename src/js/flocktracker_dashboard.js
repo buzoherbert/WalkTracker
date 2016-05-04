@@ -139,6 +139,7 @@ function showColorCodedTripData(selected){
 function showColorCodedSurveyData(selected){
 		var options = getPossibleOptions(selected, project.getSurveyProject().getSurvey());
 		var colors = getColors(options.length, defaultColors);
+		//showSurveyKey(selected, options, colors);
 		styleSurveys(selected, options, colors);
 }
 
@@ -161,6 +162,24 @@ function showTripKey(variable, options, colors){
 	};
 }
 
+function showSurveyKey(variable, options, colors){
+	var div = document.getElementById("surveyKey");
+	div.innerHTML = "<h3>" + variable + "</h3>";
+	for (var i = 0; i < options.length; i++) {
+		var line = document.createElement("span");
+		var square = getSquare(colors[i]);
+		square.className = "keyColor";
+		line.appendChild(square);
+		var text = document.createElement("span");
+		text.className = "keyText";
+		text.innerHTML = options[i].text;
+		line.appendChild(text);
+		div.appendChild(line);
+		if(i != options.length - 1){
+			div.appendChild(document.createElement("br"));
+		}
+	};
+}
 function addSurveyDataToContainer(dataList, survey, container){
 	var dataList = dataList;
 	var container = container;
@@ -799,7 +818,7 @@ surveyQuestionSelector.onchange = function(){
 	if(this.selectedIndex == 0){
 		var div = document.getElementById("tripKey");
 		//div.innerHTML = "";
-		//styleTrips(null, null, null);
+		styleSurveys(null, null, null);
 	} else {
 		var selected = this.options[this.selectedIndex].value;
 		showColorCodedSurveyData(selected);
