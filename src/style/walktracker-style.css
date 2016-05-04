@@ -54,6 +54,10 @@ body {
 	-webkit-transition: all 0.7s ease-in-out;
 	-o-transition: all 0.7s ease-in-out;
 }	
+
+
+
+
 #infoBox:hover {
 	overflow-y:scroll;
 	background:rgba(25,59,104,1);
@@ -69,6 +73,30 @@ body {
 #infoBox:hover h3, #infoBox:hover span, #tripKey:hover h3, #tripKey:hover span {
 	color: white;
 }
+
+#infoPanel {
+  width: 400px;
+  height: 100%;
+  bottom: 0px;
+  right:-400px;
+
+  position: absolute;
+  background:rgba(25,59,104,0.75);
+}
+#closeInfoPanelButton {position: relative;
+  top:5px;
+  left:5px;
+  background:rgba(255,255,255,1);
+  padding:3px;
+  border-radius: 5px;
+}
+#infoMainContainer {
+  padding:15px;
+}
+
+
+
+
 #tripKey:hover {
 	background:rgba(255,0,0,1)
 }

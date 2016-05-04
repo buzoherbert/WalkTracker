@@ -1,3 +1,59 @@
+var infoPanel = new function() {
+  var that = this;
+  this.elem = document.getElementById("infoPanel");  
+  this.style = window.getComputedStyle(this.elem);
+  this.animationInterval = null;
+  this.closeInfoPanelButton = document.getElementById("closeInfoPanelButton");
+  this.closeInfoPanelButton.onclick = function(){that.animateOut()};
+  this.onAnimationEnd = null;
+  this.animateIn = function(){
+    if(this.animationInterval != null){
+      clearInterval(that.animationInterval);
+      this.animationInterval = null;
+    }
+    this.animationInterval = this.animate(0);
+  }
+
+  this.setContent = function(innerHtml){
+    var div = document.getElementById("elementInfoContainer");
+    div.innerHtml = innerHtml;
+  }
+
+  this.animateOut = function(){
+    if(this.animationInterval != null){
+      clearInterval(that.animationInterval);
+      this.animationInterval = null;
+    }
+    var endPosition = - parseInt(this.style.getPropertyValue('width'));
+    this.animationInterval = this.animate(endPosition);
+  }
+
+
+  this.animate = function(endPosition){
+    var totalTimeMillis = 300;
+    var frameRate = 80; // Frames pe second.
+    var refreshRate = 1000/frameRate; // time between frames 
+    var tolerance = 0.01;
+    var pos = parseInt(this.style.getPropertyValue('right'));
+    var upperTolerance = endPosition + ((endPosition - pos)*tolerance);
+    var lowerTolerance = endPosition - ((endPosition - pos)*tolerance);
+    var endPositionUpperTolerance = Math.max(upperTolerance, lowerTolerance);
+    var endPositionLowerTolerance = Math.min(upperTolerance, lowerTolerance);
+    var movementInterval = (endPosition - pos)/(totalTimeMillis/ refreshRate); // The movement on each step.
+    var interval = setInterval(frame, refreshRate);
+    function frame() {
+      if ((pos <= endPositionUpperTolerance) && (pos >= endPositionLowerTolerance)) {
+        clearInterval(interval);
+        that.animationInterval = null;
+      } else {
+        pos = pos + movementInterval;
+        that.elem.style.right = pos + 'px'; 
+      }
+    }
+    return interval;
+  }
+}
+
 function fillQuestionSelector(){
 	var chapters = project.getTrackerProject().getEndSurvey().getSurvey().getChapters();
 	var selector = document.getElementById("questionFilterSelector");
