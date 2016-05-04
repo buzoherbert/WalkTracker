@@ -67,8 +67,12 @@ body {
 	-webkit-transition: all 0.5s ease-in-out;
 	-o-transition: all 0.5s ease-in-out;
 }
-#infoPanel:hover h3, #infoPanel:hover span, #tripKey:hover h3, #tripKey:hover span {
+#infoPanel:hover h3, #infoPanel:hover span {
 	color: rgb(25,59,104);
+}
+
+#tripKey:hover h3, #tripKey:hover span {
+	color: rgb(255,255,255);
 }
 
 #infoPanel {
