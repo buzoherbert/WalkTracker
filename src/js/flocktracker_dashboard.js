@@ -61,9 +61,7 @@ function fillQuestionSelector(selector, survey){
 	 	var questions = chapters[i].getQuestions();
 	 	for (var j = 0; j < questions.length; j++) {
 	 		var option = document.createElement("option");
-	 		if(((questions[j].getKind() != "IM")
-	 			&& (questions[j].getKind() != "ON"))
-	 			&& (questions[j].getKind() != "OT")){
+	 		if(questions[j].getKind() == "MC"){
 	 			option.value = questions[j].getQuestionID();
 		 		option.innerHTML = questions[j].getQuestionID();
 		 		selector.add(option);
@@ -286,6 +284,7 @@ function styleTrips(variable, options, colors){
 }
 
 function styleSurveys(variable, options, colors){
+	console.log(variable, options, colors);
 	if(variable == null){
 		for (survey in tables.survey.surveys) {
 			if (tables.survey.surveys.hasOwnProperty(survey)) {
