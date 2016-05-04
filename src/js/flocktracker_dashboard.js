@@ -572,7 +572,7 @@ var marker = function(surveyID){
 		this.marker = L.marker(coord, {icon: icon}).addTo(layer);
 		this.marker.surveyID = this.surveyID;
 		this.marker.on("click", function(){
-			onSurveyClick(that.surveyID);
+			onSurveyClick(this.surveyID);
 		});
 		//mark.bindPopup(getSurveyContentPopUp(that.surveyID))
 	}
@@ -670,6 +670,7 @@ function onTripClick(tripID){
 	infoPanel.animateIn();
 }
 function onSurveyClick(surveyID){
+	console.log(surveyID);
 	infoPanel.setContent(getSurveyContentPopUp(surveyID).outerHTML);
 	infoPanel.animateIn();
 }
