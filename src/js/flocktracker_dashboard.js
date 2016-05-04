@@ -1,7 +1,8 @@
 var infoPanel = new function() {
   var that = this;
-  this.elem = document.getElementById("infoPanel");  
-  this.style = window.getComputedStyle(this.elem);
+  this.elem = document.getElementById("infoPanel"); 
+  var style = window.getComputedStyle(this.elem);
+  this.panelWidth = parseInt(style.getPropertyValue('width')); 
   this.animationInterval = null;
   this.closeInfoPanelButton = document.getElementById("closeInfoPanelButton");
   this.closeInfoPanelButton.onclick = function(){that.animateOut()};
@@ -24,8 +25,7 @@ var infoPanel = new function() {
       clearInterval(that.animationInterval);
       this.animationInterval = null;
     }
-    var endPosition = - parseInt(this.style.getPropertyValue('width'));
-    this.animationInterval = this.animate(endPosition);
+    this.animationInterval = this.animate(- this.panelWidth);
   }
 
 
@@ -33,8 +33,9 @@ var infoPanel = new function() {
     var totalTimeMillis = 300;
     var frameRate = 80; // Frames pe second.
     var refreshRate = 1000/frameRate; // time between frames 
-    var tolerance = 0.01;
-    var pos = parseInt(this.style.getPropertyValue('right'));
+    var tolerance = 0.005;
+    var style = window.getComputedStyle(this.elem);
+    var pos = parseInt(style.getPropertyValue('right'));
     var upperTolerance = endPosition + ((endPosition - pos)*tolerance);
     var lowerTolerance = endPosition - ((endPosition - pos)*tolerance);
     var endPositionUpperTolerance = Math.max(upperTolerance, lowerTolerance);
