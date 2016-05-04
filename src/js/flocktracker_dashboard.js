@@ -17,7 +17,7 @@ var infoPanel = new function() {
 
   this.setContent = function(innerHtml){
     var div = document.getElementById("elementInfoContainer");
-    div.innerHtml = innerHtml;
+    div.innerHTML = innerHtml;
   }
 
   this.animateOut = function(){
@@ -615,22 +615,23 @@ function drawTrip(trip){
 	tables.tracker.trips[trip].line.addTo(tripLayer);
 	tables.tracker.trips[trip].line.tripID = trip;
 	tables.tracker.trips[trip].line.on("click", function(){
-	var interval = setInterval(function() {
-		var trackerInfoContainer = document.getElementById(trip + "_info");
-		if(trackerInfoContainer != null) trackerInfoContainer.outerHTML = getTrackerContentPopUp(trip).outerHTML;
-            clearInterval(interval);
-    }, 300)
+	//var interval = setInterval(function() {
+		// var trackerInfoContainer = document.getElementById(trip + "_info");
+		// if(trackerInfoContainer != null) trackerInfoContainer.outerHTML = getTrackerContentPopUp(trip).outerHTML;
+  //           clearInterval(interval);
+  //   }, 300)
 		onTripClick(this.tripID);
 	})
-	var trackerInfoContainer = document.createElement("div");
-	trackerInfoContainer.id = (trip + "_info");
-	trackerInfoContainer.className = "marker_info_container";
-	tables.tracker.trips[trip].line.bindPopup(trackerInfoContainer);
+	// var trackerInfoContainer = document.createElement("div");
+	// trackerInfoContainer.id = (trip + "_info");
+	// trackerInfoContainer.className = "marker_info_container";
+	//tables.tracker.trips[trip].line.bindPopup(trackerInfoContainer);
 }
 function onTripClick(tripID){
 	//tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 	map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
-	//showTripData(tripID);
+	infoPanel.setContent(getTrackerContentPopUp(tripID).outerHTML);
+	infoPanel.animateIn();
 }
 function replaceAll(find, replace, str) {
   return str.replace(new RegExp(find, 'g'), replace);
