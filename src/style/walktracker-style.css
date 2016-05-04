@@ -35,10 +35,11 @@ body {
 	bottom:30px;
 	left:30px;
 }
-#tripKey, #surveyKey {
+.dataKey {
 	float:left;
 	background:rgba(255,0,0,0.75);
 	padding:15px; border-radius: 5px;
+	bottom: 0;
 	transition: all 0.7s ease-in-out;
 	-moz-transition: all 0.7s ease-in-out;
 	-webkit-transition: all 0.7s ease-in-out;
@@ -63,7 +64,7 @@ body {
 	background:rgba(255,255,255,1);
 	color: white;
 }
-#infoPanel h3,#infoPanel span, #tripKey h3, #tripKey span, #layerOptions:hover h1 {
+#infoPanel h3,#infoPanel span, .dataKey h3, .dataKey span, #layerOptions:hover h1 {
 	color: black;
 	transition: all 0.5s ease-in-out;
 	-moz-transition: all 0.5s ease-in-out;
@@ -74,7 +75,7 @@ body {
 	color: rgb(25,59,104);
 }
 
-#tripKey:hover h3, #tripKey:hover span, #layerOptions:hover h1 {
+.dataKey:hover h3, .dataKey:hover span, #layerOptions:hover h1 {
 	color: rgb(255,255,255);
 }
 
@@ -115,10 +116,10 @@ body {
 }
 
 
-#tripKey:hover {
+.dataKey:hover {
 	background:rgba(255,0,0,1)
 }
-#tripKey:empty, #infoBox:empty, #surveyKey:empty {
+.dataKey:empty, #infoBox:empty, #surveyKey:empty {
 	display: none;
 }
 .tripInfoThumbnail {
