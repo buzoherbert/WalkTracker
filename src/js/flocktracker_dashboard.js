@@ -760,6 +760,19 @@ surveysCheckbox.onchange = function(){
 		clearSurveys();
 	}
 }
+var trackerCheckbox = document.getElementById("tracker_checkbox");
+trackerCheckbox.onchange = function(){
+	if(this.checked){
+		clearTrips();
+		tripLayer = new L.mapbox.featureLayer().addTo(map);
+		drawTrips(tables.tracker.trips);
+	} else {
+		clearTrips();
+	}
+}
 function clearSurveys(){
 	map.removeLayer(surveyLayer);
+}
+function clearTrips(){
+	map.removeLayer(tripLayer);
 }
