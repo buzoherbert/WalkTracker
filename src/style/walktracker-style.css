@@ -55,22 +55,19 @@ body {
 	-o-transition: all 0.7s ease-in-out;
 }	
 
-
-
-
-#infoBox:hover {
+#infoPanel:hover {
 	overflow-y:scroll;
 	background:rgba(25,59,104,1);
 	color: white;
 }
-#infoBox h3,#infoBox span, #tripKey h3, #tripKey span {
+#infoPanel h3,#infoPanel span, #tripKey h3, #tripKey span {
 	color: black;
-	transition: all 0.7s ease-in-out;
-	-moz-transition: all 0.7s ease-in-out;
-	-webkit-transition: all 0.7s ease-in-out;
-	-o-transition: all 0.7s ease-in-out;
+	transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
 }
-#infoBox:hover h3, #infoBox:hover span, #tripKey:hover h3, #tripKey:hover span {
+#infoPanel:hover h3, #infoPanel:hover span, #tripKey:hover h3, #tripKey:hover span {
 	color: white;
 }
 
@@ -82,6 +79,12 @@ body {
 
   position: absolute;
   background:rgba(25,59,104,0.75);
+
+  border-radius: 5px;
+	transition: all 0.7s ease-in-out;
+	-moz-transition: all 0.7s ease-in-out;
+	-webkit-transition: all 0.7s ease-in-out;
+	-o-transition: all 0.7s ease-in-out;
 }
 #closeInfoPanelButton {position: relative;
   top:5px;
