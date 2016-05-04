@@ -55,9 +55,8 @@ var infoPanel = new function() {
   }
 }
 
-function fillQuestionSelector(){
-	var chapters = project.getTrackerProject().getEndSurvey().getSurvey().getChapters();
-	var selector = document.getElementById("questionFilterSelector");
+function fillQuestionSelector(selector, survey){
+	var chapters = survey.getChapters();
 	for (var i = 0; i < chapters.length; i++) {
 	 	var questions = chapters[i].getQuestions();
 	 	for (var j = 0; j < questions.length; j++) {
@@ -737,7 +736,8 @@ var tripLayer = new L.mapbox.featureLayer().addTo(map);
 var surveyLayer = new L.mapbox.featureLayer().addTo(map);
 var project = getProject("walktracker");
 var tables = initializeTables();
-fillQuestionSelector();
+var tripQuestionSelector = document.getElementById("tripQuestionFilterSelector");
+fillQuestionSelector(tripQuestionSelector, project.getTrackerProject().getEndSurvey().getSurvey());
 populateColumnNames();
 populateTableData();
 fillUsersSelector();
