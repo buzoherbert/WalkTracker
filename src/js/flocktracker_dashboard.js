@@ -512,7 +512,6 @@ function drawSurveys(surveys){
     i = 0;
     var totalTimeMillis = 1000;
     var drawInterval = totalTimeMillis/surveys.length;
-    console.log(drawInterval);
     var interval = setInterval(function() {
         if (i < surveys.length) {
         	drawSurvey(that.surveys[i]);
@@ -531,8 +530,12 @@ var marker = function(surveyID){
 	that = this;
 	this.addToMapLayer = function(layer){
 		var coord = tables.survey.surveys[this.surveyID].point;
-		var mark = L.marker(coord, {icon: FT_Icon}).addTo(layer);
-		mark.bindPopup(getSurveyContentPopUp(that.surveyID))
+		tables.survey.surveys[this.surveyID].marker = L.marker(coord, {icon: FT_Icon}).addTo(layer);
+		tables.survey.surveys[this.surveyID].marker.surveyID = this.surveyID;
+		tables.survey.surveys[this.surveyID].marker.on("click", function(){
+			onSurveyClick(this.surveyID);
+		});
+		//mark.bindPopup(getSurveyContentPopUp(that.surveyID))
 	}
 }
 
@@ -594,7 +597,8 @@ getSurveyContentPopUp = function(surveyID){
 		var survey = project.getSurveyProject().getSurvey();
 		addSurveyDataToContainer(surveyData, survey, content);
 		content.className = "marker_info_container"
-		return content.outerHTML;
+		console.log(content, surveyData, survey);
+		return content;
 }
 
 function drawTrips(trips){
@@ -615,22 +619,17 @@ function drawTrip(trip){
 	tables.tracker.trips[trip].line.addTo(tripLayer);
 	tables.tracker.trips[trip].line.tripID = trip;
 	tables.tracker.trips[trip].line.on("click", function(){
-	//var interval = setInterval(function() {
-		// var trackerInfoContainer = document.getElementById(trip + "_info");
-		// if(trackerInfoContainer != null) trackerInfoContainer.outerHTML = getTrackerContentPopUp(trip).outerHTML;
-  //           clearInterval(interval);
-  //   }, 300)
 		onTripClick(this.tripID);
-	})
-	// var trackerInfoContainer = document.createElement("div");
-	// trackerInfoContainer.id = (trip + "_info");
-	// trackerInfoContainer.className = "marker_info_container";
-	//tables.tracker.trips[trip].line.bindPopup(trackerInfoContainer);
+	});
 }
 function onTripClick(tripID){
 	//tables.tracker.trips[tripID].line.setStyle(selectedStyle);
 	map.fitBounds(tables.tracker.trips[tripID].line.getBounds());
 	infoPanel.setContent(getTrackerContentPopUp(tripID).outerHTML);
+	infoPanel.animateIn();
+}
+function onSurveyClick(surveyID){
+	infoPanel.setContent(getSurveyContentPopUp(surveyID).outerHTML);
 	infoPanel.animateIn();
 }
 function replaceAll(find, replace, str) {
