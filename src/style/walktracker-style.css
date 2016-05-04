@@ -30,10 +30,12 @@ body {
 #layerOptions:hover {
 	background:rgba(25,59,104,1)
 }
-#tripKey {
+#keyContainer{
 	position: absolute;
 	bottom:30px;
 	left:30px;
+}
+#tripKey, #surveyKey {
 	background:rgba(255,0,0,0.75);
 	padding:15px; border-radius: 5px;
 	transition: all 0.7s ease-in-out;
@@ -115,7 +117,7 @@ body {
 #tripKey:hover {
 	background:rgba(255,0,0,1)
 }
-#tripKey:empty, #infoBox:empty {
+#tripKey:empty, #infoBox:empty, #surveyKey:empty {
 	display: none;
 }
 .tripInfoThumbnail {
@@ -146,6 +148,10 @@ body {
 	border-color: white;
 	border-width: 2px;
 	border-style: solid;
+}
+.keyIcon{
+	width: 20px;
+	height: 20px;
 }
 .questionSelector {
 	width: 170px;

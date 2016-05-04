@@ -139,7 +139,7 @@ function showColorCodedTripData(selected){
 function showColorCodedSurveyData(selected){
 		var options = getPossibleOptions(selected, project.getSurveyProject().getSurvey());
 		var colors = getColors(options.length, defaultColors);
-		//showSurveyKey(selected, options, colors);
+		showSurveyKey(selected, options, colors);
 		styleSurveys(selected, options, colors);
 }
 
@@ -167,9 +167,9 @@ function showSurveyKey(variable, options, colors){
 	div.innerHTML = "<h3>" + variable + "</h3>";
 	for (var i = 0; i < options.length; i++) {
 		var line = document.createElement("span");
-		var square = getSquare(colors[i]);
-		square.className = "keyColor";
-		line.appendChild(square);
+		var icon = getIcon(colors[i]);
+		icon.className = "keyIcon";
+		line.appendChild(icon);
 		var text = document.createElement("span");
 		text.className = "keyText";
 		text.innerHTML = options[i].text;
@@ -251,6 +251,20 @@ function getSquare(color) {
 		return c;
 }
 
+function getIcon(color){
+	var img = document.createElement('img');
+	img.src = getIconUrl(color);
+	return img;
+}
+
+function getIconUrl(color){
+	var colorHash = color;
+	var colorNoHash = colorHash.replace("#", "");
+	var url = window.location.href;
+	url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft_' + colorNoHash + '.png';
+	return url;
+}
+
 // Deletes the keys in keyArray from given obj and returns the clean obj.
 // It only checks for the outermost layer of keys.
 function deleteKeysFromObject(obj, keyArray){
@@ -323,10 +337,7 @@ function styleSurveys(variable, options, colors){
 						var surveyData = tables.survey.data(query).get()[0];
 						try{
 							var answerIndex = getAnswerIndex(surveyData[variable], options);
-							var colorHash = colors[answerIndex];
-							var colorNoHash = colorHash.replace("#", "");
-							var url = window.location.href;
-							url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft_' + colorNoHash + '.png';
+							var url = getIconUrl(colors[answerIndex]);
 							var new_icon = L.icon({
 								iconUrl: url,
 								iconSize: [25, 30],
@@ -816,8 +827,8 @@ var surveyQuestionSelector = document.getElementById("surveyQuestionFilterSelect
 fillQuestionSelector(surveyQuestionSelector, project.getSurveyProject().getSurvey());
 surveyQuestionSelector.onchange = function(){
 	if(this.selectedIndex == 0){
-		var div = document.getElementById("tripKey");
-		//div.innerHTML = "";
+		var div = document.getElementById("surveyKey");
+		div.innerHTML = "";
 		styleSurveys(null, null, null);
 	} else {
 		var selected = this.options[this.selectedIndex].value;
