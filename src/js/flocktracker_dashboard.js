@@ -70,16 +70,6 @@ function fillQuestionSelector(selector, survey){
 	 		}
 	 	};
 	};
-	selector.onchange = function(){
-		if(this.selectedIndex == 0){
-			var div = document.getElementById("tripKey");
-			div.innerHTML = "";
-			styleTrips(null, null, null);
-		} else {
-			var selected = this.options[this.selectedIndex].value;
-			showColorCodedTripData(selected);
-		}
-	}
 }
 
 function fillUsersSelector(){
@@ -736,8 +726,34 @@ var tripLayer = new L.mapbox.featureLayer().addTo(map);
 var surveyLayer = new L.mapbox.featureLayer().addTo(map);
 var project = getProject("walktracker");
 var tables = initializeTables();
+
 var tripQuestionSelector = document.getElementById("tripQuestionFilterSelector");
 fillQuestionSelector(tripQuestionSelector, project.getTrackerProject().getEndSurvey().getSurvey());
+tripQuestionSelector.onchange = function(){
+	if(this.selectedIndex == 0){
+		var div = document.getElementById("tripKey");
+		div.innerHTML = "";
+		styleTrips(null, null, null);
+	} else {
+		var selected = this.options[this.selectedIndex].value;
+		showColorCodedTripData(selected);
+	}
+}
+
+var surveyQuestionSelector = document.getElementById("surveyQuestionFilterSelector");
+fillQuestionSelector(surveyQuestionSelector, project.getSurveyProject().getSurvey());
+surveyQuestionSelector.onchange = function(){
+	if(this.selectedIndex == 0){
+		var div = document.getElementById("tripKey");
+		//div.innerHTML = "";
+		//styleTrips(null, null, null);
+	} else {
+		//var selected = this.options[this.selectedIndex].value;
+		//showColorCodedTripData(selected);
+	}
+}
+
+
 populateColumnNames();
 populateTableData();
 fillUsersSelector();
