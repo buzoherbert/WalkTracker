@@ -18,9 +18,10 @@ function fillQuestionSelector(){
 		if(this.selectedIndex == 0){
 			var div = document.getElementById("tripKey");
 			div.innerHTML = "";
+			styleTrips(null, null, null);
 		} else {
 			var selected = this.options[this.selectedIndex].value;
-			colorCodeTrips(selected);
+			showColorCodedTripData(selected);
 		}
 	}
 }
@@ -73,7 +74,7 @@ function fillUsersSelector(){
 			div.innerHTML = "";
 	} else{
 		var selected = questionSelector.options[questionSelector.selectedIndex].value;
-			colorCodeTrips(selected);
+			showColorCodedTripData(selected);
 	}			
 
 
@@ -84,7 +85,7 @@ function fillUsersSelector(){
 
 }*/
 
-function colorCodeTrips(selected){
+function showColorCodedTripData(selected){
 		var options = getPossibleOptions(selected);
 		var colors = getColors(options.length, defaultColors);
 		showTripKey(selected, options, colors);
@@ -196,28 +197,39 @@ function deleteKeysFromObject(obj, keyArray){
 }
 
 function styleTrips(variable, options, colors){
-	if(variable in customStyles){
-
-	} else {
-		var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
+	if(variable == null){
 		for (trip in tables.tracker.trips) {
-        	if (tables.tracker.trips.hasOwnProperty(trip)) {
-        		if(tripsInSE.indexOf(trip) > 0){
-        			query = {};
-					query.TripID = trip;				
-					var tripData = tables.trackerEndSurvey.data(query).get()[0];
-					var answerIndex = getAnswerIndex(tripData[variable], options);
-					var lineStyle = {};
-					lineStyle.color = colors[answerIndex];
-					tables.tracker.trips[trip].line.setStyle(lineStyle);
-        		} else {
+	        	if (tables.tracker.trips.hasOwnProperty(trip)) {
         			var lineStyle = {};
 					lineStyle.color = "#000";
 					lineStyle.fillOpacity = 1;
 					tables.tracker.trips[trip].line.setStyle(lineStyle);
-        		}
-        	}
-        }
+	        	}
+	        }
+	} else {
+		if(variable in customStyles){
+
+		} else {
+			var tripsInSE = tables.trackerEndSurvey.data().distinct("TripID");
+			for (trip in tables.tracker.trips) {
+	        	if (tables.tracker.trips.hasOwnProperty(trip)) {
+	        		if(tripsInSE.indexOf(trip) > 0){
+	        			query = {};
+						query.TripID = trip;				
+						var tripData = tables.trackerEndSurvey.data(query).get()[0];
+						var answerIndex = getAnswerIndex(tripData[variable], options);
+						var lineStyle = {};
+						lineStyle.color = colors[answerIndex];
+						tables.tracker.trips[trip].line.setStyle(lineStyle);
+	        		} else {
+	        			var lineStyle = {};
+						lineStyle.color = "#000";
+						lineStyle.fillOpacity = 1;
+						tables.tracker.trips[trip].line.setStyle(lineStyle);
+	        		}
+	        	}
+	        }
+		}
 	}
 }
 function getAnswerIndex(value, options){
