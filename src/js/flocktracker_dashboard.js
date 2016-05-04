@@ -132,10 +132,16 @@ function fillUsersSelector(){
 }*/
 
 function showColorCodedTripData(selected){
-		var options = getPossibleOptions(selected);
+		var options = getPossibleOptions(selected, project.getTrackerProject().getEndSurvey().getSurvey());
 		var colors = getColors(options.length, defaultColors);
 		showTripKey(selected, options, colors);
 		styleTrips(selected, options, colors);
+}
+
+function showColorCodedSurveyData(selected){
+		var options = getPossibleOptions(selected, project.getSurveyProject().getSurvey());
+		var colors = getColors(options.length, defaultColors);
+		styleSurveys(selected, options, colors);
 }
 
 function showTripKey(variable, options, colors){
@@ -278,6 +284,44 @@ function styleTrips(variable, options, colors){
 		}
 	}
 }
+
+function styleSurveys(variable, options, colors){
+	if(variable == null){
+		for (survey in tables.survey.surveys) {
+			if (tables.survey.surveys.hasOwnProperty(survey)) {
+				tables.survey.surveys[survey].marker.changeIcon(FT_Icon);
+			}
+		}
+	} else {
+		if(variable in customStyles){
+
+		} else {
+			var surveysInProject = tables.survey.data().distinct("SurveyID");
+			for (survey in tables.survey.surveys) {
+				if (tables.survey.surveys.hasOwnProperty(survey)) {
+					if(surveysInProject.indexOf(survey) > 0){
+						query = {};
+						query.SurveyID = survey;				
+						var surveyData = tables.survey.data(query).get()[0];
+						var answerIndex = getAnswerIndex(surveyData[variable], options);
+						var colorHash = colors[answerIndex];
+						var colorNoHash = colorHash.replace("#", "");
+						var url = window.location.href;
+						url = url.substring(0, url.lastIndexOf("/") + 1) + '/img/ft_' + colorNoHash + '.png';
+						var new_icon = L.icon({
+							iconUrl: url,
+							iconSize: [25, 30],
+						});
+						tables.survey.surveys[survey].marker.changeIcon(new_icon);
+					} else {
+						tables.survey.surveys[survey].marker.changeIcon(FT_Icon);
+					}
+				}
+			}
+		}
+	}
+}
+
 function getAnswerIndex(value, options){
 	for (var i = 0; i < options.length; i++) {
 		if ((options[i].value == value) || (options[i].text == value)){
@@ -299,8 +343,8 @@ function getColors(numberOfColors, colorPool){
 	}
 	return colorArray;
 }
-function getPossibleOptions (variable){
-	var surv = project.getTrackerProject().getEndSurvey().getSurvey();
+function getPossibleOptions (variable, survey){
+	var surv = survey;
 	var q = surv.getQuestionById(variable);
 	var posAnswersInDB = tables.trackerEndSurvey.data().order(variable + " asec").distinct(variable);
 	var posAnswerTextInPr = [];
@@ -511,20 +555,27 @@ function drawSurveys(surveys){
     }, drawInterval)
 }
 function drawSurvey(survey){
-	var surveyMarker = new marker(survey);
-	surveyMarker.addToMapLayer(surveyLayer);
+	tables.survey.surveys[survey].marker = new marker(survey);
+	tables.survey.surveys[survey].marker.addToMapLayer(surveyLayer, FT_Icon);
 }
 var marker = function(surveyID){
 	this.surveyID = surveyID;
 	that = this;
-	this.addToMapLayer = function(layer){
+	this.marker = null;
+	this.layer = null;
+	this.addToMapLayer = function(layer, icon){
+		this.layer = layer;
 		var coord = tables.survey.surveys[this.surveyID].point;
-		tables.survey.surveys[this.surveyID].marker = L.marker(coord, {icon: FT_Icon}).addTo(layer);
-		tables.survey.surveys[this.surveyID].marker.surveyID = this.surveyID;
-		tables.survey.surveys[this.surveyID].marker.on("click", function(){
-			onSurveyClick(this.surveyID);
+		this.marker = L.marker(coord, {icon: icon}).addTo(layer);
+		this.marker.surveyID = this.surveyID;
+		this.marker.on("click", function(){
+			onSurveyClick(that.surveyID);
 		});
 		//mark.bindPopup(getSurveyContentPopUp(that.surveyID))
+	}
+	this.changeIcon = function(icon){
+		this.layer.removeLayer(this.marker);
+		this.addToMapLayer(this.layer, icon);
 	}
 }
 
@@ -585,8 +636,6 @@ getSurveyContentPopUp = function(surveyID){
 		var surveyData = tables.survey.data(query).get()[0];
 		var survey = project.getSurveyProject().getSurvey();
 		addSurveyDataToContainer(surveyData, survey, content);
-		content.className = "marker_info_container"
-		console.log(content, surveyData, survey);
 		return content;
 }
 
@@ -748,8 +797,8 @@ surveyQuestionSelector.onchange = function(){
 		//div.innerHTML = "";
 		//styleTrips(null, null, null);
 	} else {
-		//var selected = this.options[this.selectedIndex].value;
-		//showColorCodedTripData(selected);
+		var selected = this.options[this.selectedIndex].value;
+		showColorCodedSurveyData(selected);
 	}
 }
 
